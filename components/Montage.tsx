@@ -1,7 +1,19 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useState } from "react";
-
-const ffmpeg = createFFmpeg({ log: true });
+const messageMap = new Map<string, string[]>();
+const ffmpeg = createFFmpeg({
+  logger: (msg) => {
+    const { message, type } = msg;
+    if (!messageMap.has(type)) {
+      messageMap.set(type, []);
+    }
+    messageMap.get(type)?.push(message);
+    console.log("log", msg);
+  },
+  progress: (progress) => {
+    console.log("progress", progress);
+  },
+});
 
 export const Montage = () => {
   const [src, setSrc] = useState("");
@@ -55,6 +67,14 @@ export const Montage = () => {
           );
         }}
       />
+      <button
+        type="button"
+        onClick={() => {
+          console.log("messageMap", messageMap);
+        }}
+      >
+        log messageMap
+      </button>
     </>
   );
 };
