@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { Montage } from "../components/Montage";
+import { SlideShow } from "../components/SlideShow";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       </Head>
 
       <Montage />
+      <SlideShow />
     </>
   );
 }
