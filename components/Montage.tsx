@@ -21,7 +21,7 @@ export const Montage = () => {
   return (
     <>
       <h1>複数のビデオを連結して一つのビデオを作成するサンプル</h1>
-      <video src={src} controls></video>
+      {src && <video style={{ width: "100vw" }} src={src} controls></video>}
       <input
         type="file"
         multiple
