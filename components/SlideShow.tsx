@@ -2,6 +2,9 @@ import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { useEffect, useState } from "react";
 
 const messageMap = new Map<string, string[]>();
+const ERROR_LIST = ["Operation not permitted", "Conversion failed"].map((msg) =>
+  msg.toLowerCase()
+);
 
 const ffmpeg = createFFmpeg({
   logger: (msg) => {
@@ -10,7 +13,9 @@ const ffmpeg = createFFmpeg({
       messageMap.set(type, []);
     }
     messageMap.get(type)?.push(message);
-    if (message.toLowerCase().indexOf("error") > -1) {
+    if (
+      ERROR_LIST.some((errMsg) => message.toLowerCase().indexOf(errMsg) > -1)
+    ) {
       console.error("error", msg);
     } else {
       console.log("log", msg);
