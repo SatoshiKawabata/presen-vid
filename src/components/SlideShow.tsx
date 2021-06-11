@@ -29,9 +29,8 @@ const ffmpeg = createFFmpeg({
 export const SlideShow = () => {
   const [src, setSrc] = useState("");
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
-  const [recorderState, setRecorderState] = useState<RecordingState | null>(
-    null
-  );
+  const [recorderState, setRecorderState] =
+    useState<RecordingState | null>(null);
   const [audioReady, setAudioReady] = useState(false);
   const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const [durationMillisec, setDurationMillisec] = useState(0);
@@ -123,13 +122,6 @@ export const SlideShow = () => {
           type="button"
           onClick={async () => {
             const files = imageFiles;
-            //音声を読み込んでfile systemに乗せる
-            // ffmpeg.FS(
-            //   "writeFile",
-            //   "audio.ogg",
-            //   await fetchFile("/assets/audio.ogg")
-            // );
-
             let fileList = "";
             for (let i = 0; i < files.length; i++) {
               const file = files[i];
