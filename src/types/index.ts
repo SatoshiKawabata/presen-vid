@@ -7,7 +7,7 @@ export interface Presentation {
 export interface Slide {
   uid: string;
   title: string;
-  image: Blob;
+  image: File;
   audios: Audio[];
   selectedAudioUid?: Audio["uid"];
 }

@@ -18,6 +18,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
+import { createVideo, download } from "../../src/Utils";
 
 export default function Presentations() {
   const router = useRouter();
@@ -81,7 +82,34 @@ export default function Presentations() {
         onClose={() => setIsOpenedMenu(false)}
       >
         <List>
-          <ListItem button>
+          <ListItem
+            button
+            onClick={async () => {
+              if (state.presentation) {
+                const audios: Blob[] = [];
+                const durations: number[] = [];
+                const imageFiles: File[] = [];
+                for (const slide of state.presentation.slides) {
+                  imageFiles.push(slide.image);
+                  for (const audio of slide.audios) {
+                    if (audio.uid === slide.selectedAudioUid) {
+                      audios.push(audio.blob);
+                      durations.push(audio.durationMillisec);
+                      break;
+                    }
+                  }
+                }
+
+                const videoBlob = await createVideo(
+                  imageFiles,
+                  audios,
+                  durations
+                );
+                const url = URL.createObjectURL(videoBlob);
+                download(url, "New Presentation");
+              }
+            }}
+          >
             <ListItemIcon>
               <GetAppIcon />
             </ListItemIcon>
