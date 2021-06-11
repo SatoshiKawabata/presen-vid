@@ -2,6 +2,7 @@ import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import Link from "next/link";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,9 +37,11 @@ export const Header = (p: P) => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" className={classes.title}>
-            Slideshow
-          </Typography>
+          <Link href="/presentations">
+            <Typography variant="h6" className={classes.title}>
+              Slideshow
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
     </>

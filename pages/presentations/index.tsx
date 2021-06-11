@@ -49,7 +49,7 @@ export default function Presentations() {
               const id = await db
                 .table<Omit<Presentation, "id">>("presentations")
                 .add({
-                  title: "New Presentation",
+                  title: `New Presentation ${presentations.length}`,
                   slides: Array.from(e.target.files).map((file) => {
                     return {
                       uid: uuidv4(),
