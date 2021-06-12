@@ -11,11 +11,15 @@ import {
   PresentationReducer,
 } from "../../src/reducers/PresentationReducer";
 import {
+  Backdrop,
+  Button,
+  CircularProgress,
   Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { createVideo, download } from "../../src/Utils";
@@ -26,7 +30,7 @@ export default function Presentations() {
     PresentationReducer,
     createInitialState()
   );
-  const { presentation, selectedSlideUid } = state;
+  const { presentation, selectedSlideUid, isShowBackdrop } = state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
   );
@@ -69,7 +73,7 @@ export default function Presentations() {
   return (
     <>
       <Head>
-        <title>Presentation {}</title>
+        <title>プレゼン</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header
@@ -85,7 +89,9 @@ export default function Presentations() {
           <ListItem
             button
             onClick={async () => {
+              setIsOpenedMenu(false);
               if (state.presentation) {
+                dispatch({ type: PresentationActionType.SHOW_BACKDROP });
                 const audios: Blob[] = [];
                 const durations: number[] = [];
                 const imageFiles: File[] = [];
@@ -100,13 +106,18 @@ export default function Presentations() {
                   }
                 }
 
-                const videoBlob = await createVideo(
-                  imageFiles,
-                  audios,
-                  durations
-                );
-                const url = URL.createObjectURL(videoBlob);
-                download(url, "New Presentation");
+                try {
+                  const videoBlob = await createVideo(
+                    imageFiles,
+                    audios,
+                    durations
+                  );
+                  const url = URL.createObjectURL(videoBlob);
+                  download(url, "New Presentation.webm");
+                } catch (e) {
+                  console.error(e);
+                }
+                dispatch({ type: PresentationActionType.HIDE_BACKDROP });
               }
             }}
           >
@@ -135,17 +146,22 @@ export default function Presentations() {
           >
             {presentation.slides.map((slide) => {
               return (
-                <button
-                  type="button"
-                  onClick={() => {
-                    dispatch({
-                      type: PresentationActionType.SET_STATE,
-                      state: { selectedSlideUid: slide.uid },
-                    });
-                  }}
+                <div
+                  style={{ borderBottom: "1px solid #bbb", margin: "8px 4px" }}
                 >
-                  <img src={URL.createObjectURL(slide.image)} />
-                </button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      dispatch({
+                        type: PresentationActionType.SET_STATE,
+                        state: { selectedSlideUid: slide.uid },
+                      });
+                    }}
+                    disabled={state.recordingState === "recording"}
+                  >
+                    <img src={URL.createObjectURL(slide.image)} />
+                  </Button>
+                </div>
               );
             })}
           </div>
@@ -158,6 +174,12 @@ export default function Presentations() {
           </div>
         </div>
       )}
+      <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
+        <CircularProgress color="inherit" />
+        <Typography variant="h5" component="h1" color="inherit">
+          ビデオの書き出し中
+        </Typography>
+      </Backdrop>
     </>
   );
 }

@@ -28,13 +28,13 @@ export default function Presentations() {
   return (
     <>
       <Head>
-        <title>Presentation List</title>
+        <title>プレゼン一覧</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
       <Container>
-        <Typography variant="h6" component="h1">
-          Upload new slides
+        <Typography variant="h5" component="h1">
+          新規プレゼンの作成
         </Typography>
         <input
           type="file"
@@ -63,6 +63,9 @@ export default function Presentations() {
             }
           }}
         />
+        <Typography variant="h5" component="h2">
+          プレゼン一覧
+        </Typography>
         <List>
           {presentations.map((presentation) => {
             return (

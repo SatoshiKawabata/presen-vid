@@ -111,14 +111,14 @@ export const createVideo = async (
     "libx264",
     "-c",
     "copy", // 再エンコードせずにコーデックをそのまま使う
-    "result.webm"
+    "result.mp4"
   );
-  const data = ffmpeg.FS("readFile", "result.webm");
+  const data = ffmpeg.FS("readFile", "result.mp4");
   const result = new Blob([data.buffer], { type: "video/mp4" });
 
   // unlink file
   ffmpeg.FS("unlink", "fileList.txt");
-  ffmpeg.FS("unlink", "result.webm");
+  ffmpeg.FS("unlink", "result.mp4");
   for (const audioName of audioNames) {
     ffmpeg.FS("unlink", audioName);
   }

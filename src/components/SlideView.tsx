@@ -1,6 +1,6 @@
 import React, { Dispatch, useState } from "react";
 import { Audio, Slide } from "../types";
-import { Fab, Tooltip } from "@material-ui/core";
+import { Fab, MenuItem, Select, Tooltip } from "@material-ui/core";
 import MicIcon from "@material-ui/icons/Mic";
 import {
   PresentationAction,
@@ -103,7 +103,9 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
       </div>
       {selectedAudio && (
         <>
-          <select
+          <Select
+            disabled={state.recordingState === "recording"}
+            value={selectedAudio.uid}
             onChange={(e) => {
               const newSelectedAudio = slide.audios.find(
                 (audio) => audio.uid === e.target.value
@@ -118,16 +120,18 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           >
             {slide.audios.map((audio) => {
               return (
-                <option
+                <MenuItem
                   value={audio.uid}
                   selected={audio.uid === selectedAudio.uid}
                 >
                   {audio.title}
-                </option>
+                </MenuItem>
               );
             })}
-          </select>
-          <audio src={URL.createObjectURL(selectedAudio.blob)} controls />
+          </Select>
+          {state.recordingState !== "recording" && (
+            <audio src={URL.createObjectURL(selectedAudio.blob)} controls />
+          )}
         </>
       )}
     </>

@@ -5,11 +5,13 @@ export interface PresentationState {
   recordingState: RecordingState;
   selectedSlideUid?: Slide["uid"];
   presentation?: Presentation;
+  isShowBackdrop: boolean;
 }
 
 export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
+    isShowBackdrop: false,
   };
 };
 
@@ -18,6 +20,8 @@ export enum PresentationActionType {
   SET_RECORDING_STATE,
   ADD_AUDIO,
   SELECT_AUDIO,
+  SHOW_BACKDROP,
+  HIDE_BACKDROP,
 }
 
 export type PresentationAction =
@@ -39,6 +43,12 @@ export type PresentationAction =
       type: PresentationActionType.SELECT_AUDIO;
       selectedSlideUid: Slide["uid"];
       selectedAudioUid: Audio["uid"];
+    }
+  | {
+      type: PresentationActionType.SHOW_BACKDROP;
+    }
+  | {
+      type: PresentationActionType.HIDE_BACKDROP;
     };
 
 export const PresentationReducer = (
@@ -102,6 +112,16 @@ export const PresentationReducer = (
         };
       }
       return state;
+    case PresentationActionType.SHOW_BACKDROP:
+      return {
+        ...state,
+        isShowBackdrop: true,
+      };
+    case PresentationActionType.HIDE_BACKDROP:
+      return {
+        ...state,
+        isShowBackdrop: false,
+      };
 
     default: {
       return state;
