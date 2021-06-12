@@ -19,10 +19,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { createVideo, download } from "../../src/Utils";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 export default function Presentations() {
   const router = useRouter();
@@ -70,6 +72,10 @@ export default function Presentations() {
     }
   }, []);
 
+  const isReadyToExport = state.presentation?.slides.every(
+    (slide) => slide.audios.length > 0
+  );
+
   return (
     <>
       <Head>
@@ -86,46 +92,56 @@ export default function Presentations() {
         onClose={() => setIsOpenedMenu(false)}
       >
         <List>
-          <ListItem
-            button
-            onClick={async () => {
-              setIsOpenedMenu(false);
-              if (state.presentation) {
-                dispatch({ type: PresentationActionType.SHOW_BACKDROP });
-                const audios: Blob[] = [];
-                const durations: number[] = [];
-                const imageFiles: File[] = [];
-                for (const slide of state.presentation.slides) {
-                  imageFiles.push(slide.image);
-                  for (const audio of slide.audios) {
-                    if (audio.uid === slide.selectedAudioUid) {
-                      audios.push(audio.blob);
-                      durations.push(audio.durationMillisec);
-                      break;
+          <Tooltip
+            title={
+              isReadyToExport
+                ? ""
+                : "まだ録音されていないスライドがあるので書き出しできません。"
+            }
+            placement="right"
+          >
+            <ListItem
+              button
+              disabled={!isReadyToExport}
+              onClick={async () => {
+                setIsOpenedMenu(false);
+                if (state.presentation) {
+                  dispatch({ type: PresentationActionType.SHOW_BACKDROP });
+                  const audios: Blob[] = [];
+                  const durations: number[] = [];
+                  const imageFiles: File[] = [];
+                  for (const slide of state.presentation.slides) {
+                    imageFiles.push(slide.image);
+                    for (const audio of slide.audios) {
+                      if (audio.uid === slide.selectedAudioUid) {
+                        audios.push(audio.blob);
+                        durations.push(audio.durationMillisec);
+                        break;
+                      }
                     }
                   }
-                }
 
-                try {
-                  const videoBlob = await createVideo(
-                    imageFiles,
-                    audios,
-                    durations
-                  );
-                  const url = URL.createObjectURL(videoBlob);
-                  download(url, "New Presentation.webm");
-                } catch (e) {
-                  console.error(e);
+                  try {
+                    const videoBlob = await createVideo(
+                      imageFiles,
+                      audios,
+                      durations
+                    );
+                    const url = URL.createObjectURL(videoBlob);
+                    download(url, "New Presentation.webm");
+                  } catch (e) {
+                    console.error(e);
+                  }
+                  dispatch({ type: PresentationActionType.HIDE_BACKDROP });
                 }
-                dispatch({ type: PresentationActionType.HIDE_BACKDROP });
-              }
-            }}
-          >
-            <ListItemIcon>
-              <GetAppIcon />
-            </ListItemIcon>
-            <ListItemText primary="ビデオを書き出す" />
-          </ListItem>
+              }}
+            >
+              <ListItemIcon>
+                <GetAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="ビデオを書き出す" />
+            </ListItem>
+          </Tooltip>
         </List>
       </Drawer>
       {presentation && selectedSlide && (
@@ -147,7 +163,11 @@ export default function Presentations() {
             {presentation.slides.map((slide) => {
               return (
                 <div
-                  style={{ borderBottom: "1px solid #bbb", margin: "8px 4px" }}
+                  style={{
+                    borderBottom: "1px solid #bbb",
+                    margin: "8px 4px",
+                    position: "relative",
+                  }}
                 >
                   <Button
                     type="button"
@@ -160,6 +180,19 @@ export default function Presentations() {
                     disabled={state.recordingState === "recording"}
                   >
                     <img src={URL.createObjectURL(slide.image)} />
+                    {slide.selectedAudioUid && (
+                      <Tooltip
+                        title="録音済み"
+                        placement="right"
+                        style={{
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                        }}
+                      >
+                        <CheckCircleIcon color="secondary" />
+                      </Tooltip>
+                    )}
                   </Button>
                 </div>
               );
