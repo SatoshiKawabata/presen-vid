@@ -102,7 +102,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
         </Tooltip>
       </div>
       {selectedAudio && (
-        <>
+        <div style={{ display: "flex" }}>
           <Select
             disabled={state.recordingState === "recording"}
             value={selectedAudio.uid}
@@ -130,9 +130,13 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
             })}
           </Select>
           {state.recordingState !== "recording" && (
-            <audio src={URL.createObjectURL(selectedAudio.blob)} controls />
+            <audio
+              src={URL.createObjectURL(selectedAudio.blob)}
+              controls
+              style={{ flexGrow: 1 }}
+            />
           )}
-        </>
+        </div>
       )}
     </>
   );
