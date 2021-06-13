@@ -22,6 +22,7 @@ export enum PresentationActionType {
   SELECT_AUDIO,
   SHOW_BACKDROP,
   HIDE_BACKDROP,
+  DND_SLIDE,
 }
 
 export type PresentationAction =
@@ -49,6 +50,11 @@ export type PresentationAction =
     }
   | {
       type: PresentationActionType.HIDE_BACKDROP;
+    }
+  | {
+      type: PresentationActionType.DND_SLIDE;
+      fromUid: Slide["uid"];
+      toUid: Slide["uid"];
     };
 
 export const PresentationReducer = (
@@ -82,7 +88,7 @@ export const PresentationReducer = (
             return slide;
           }),
         };
-        updatePresentation(presentation);
+        savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -104,7 +110,7 @@ export const PresentationReducer = (
             return slide;
           }),
         };
-        updatePresentation(presentation);
+        savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -122,6 +128,27 @@ export const PresentationReducer = (
         ...state,
         isShowBackdrop: false,
       };
+    case PresentationActionType.DND_SLIDE:
+      if (state.presentation) {
+        const { slides } = state.presentation;
+        const fromIdx = slides.findIndex(
+          (slide) => slide.uid === action.fromUid
+        );
+        const toIdx = slides.findIndex((slide) => slide.uid === action.toUid);
+        const newSlides = [...slides];
+        newSlides[fromIdx] = slides[toIdx]!;
+        newSlides[toIdx] = slides[fromIdx]!;
+        const presentation = {
+          ...state.presentation,
+          slides: newSlides,
+        };
+        savePresentation(presentation);
+        return {
+          ...state,
+          presentation,
+        };
+      }
+      return state;
 
     default: {
       return state;
@@ -129,7 +156,7 @@ export const PresentationReducer = (
   }
 };
 
-const updatePresentation = async (presentation: Presentation) => {
+const savePresentation = async (presentation: Presentation) => {
   const db = new Dexie("montage");
   db.version(1).stores({
     presentations: "++id, title, slides",

@@ -163,6 +163,7 @@ export default function Presentations() {
             {presentation.slides.map((slide) => {
               return (
                 <div
+                  key={slide.uid}
                   style={{
                     borderBottom: "1px solid #bbb",
                     margin: "8px 4px",
@@ -177,9 +178,36 @@ export default function Presentations() {
                         state: { selectedSlideUid: slide.uid },
                       });
                     }}
+                    draggable={false}
                     disabled={state.recordingState === "recording"}
                   >
-                    <img src={URL.createObjectURL(slide.image)} />
+                    <div
+                      draggable={true}
+                      onDragStartCapture={(e) => {
+                        e.dataTransfer.setData("text/plain", slide.uid);
+                        e.stopPropagation();
+                      }}
+                      onDragOverCapture={(e) => {
+                        e.preventDefault();
+                      }}
+                      onDragEnterCapture={(e) => {
+                        e.preventDefault();
+                      }}
+                      onDropCapture={(e) => {
+                        const fromUid = e.dataTransfer.getData("text/plain");
+                        dispatch({
+                          type: PresentationActionType.DND_SLIDE,
+                          fromUid,
+                          toUid: slide.uid,
+                        });
+                        e.stopPropagation();
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(slide.image)}
+                        draggable={false}
+                      />
+                    </div>
                     {slide.selectedAudioUid && (
                       <Tooltip
                         title="録音済み"
