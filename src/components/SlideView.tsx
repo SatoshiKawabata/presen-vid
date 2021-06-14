@@ -31,7 +31,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", margin: "16px" }}>
         <img src={URL.createObjectURL(slide.image)} style={{ width: "100%" }} />
         <Tooltip
           title={state.recordingState === "recording" ? "録音中" : "録音する"}
@@ -102,7 +102,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
         </Tooltip>
       </div>
       {selectedAudio && (
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", margin: "16px" }}>
           <Select
             disabled={state.recordingState === "recording"}
             value={selectedAudio.uid}
@@ -117,6 +117,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                   selectedAudioUid: newSelectedAudio.uid,
                 });
             }}
+            style={{ margin: "0 4px", flexGrow: 0.1 }}
           >
             {slide.audios.map((audio) => {
               return (
