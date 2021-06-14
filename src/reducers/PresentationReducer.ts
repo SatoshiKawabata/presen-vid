@@ -1,5 +1,6 @@
 import { Audio, Presentation, Slide } from "../types";
 import Dexie from "dexie";
+import { v4 as uuidv4 } from "uuid";
 
 export interface PresentationState {
   recordingState: RecordingState;
@@ -23,6 +24,7 @@ export enum PresentationActionType {
   SHOW_BACKDROP,
   HIDE_BACKDROP,
   DND_SLIDE,
+  ADD_SLIDE,
 }
 
 export type PresentationAction =
@@ -55,6 +57,10 @@ export type PresentationAction =
       type: PresentationActionType.DND_SLIDE;
       fromUid: Slide["uid"];
       toUid: Slide["uid"];
+    }
+  | {
+      type: PresentationActionType.ADD_SLIDE;
+      file: File;
     };
 
 export const PresentationReducer = (
@@ -146,6 +152,28 @@ export const PresentationReducer = (
         return {
           ...state,
           presentation,
+        };
+      }
+      return state;
+    case PresentationActionType.ADD_SLIDE:
+      const { file } = action;
+      const { presentation } = state;
+      if (presentation) {
+        return {
+          ...state,
+          presentation: {
+            ...presentation,
+            slides: [
+              ...presentation.slides,
+              {
+                uid: uuidv4(),
+
+                title: file.name,
+                image: file,
+                audios: [],
+              },
+            ],
+          },
         };
       }
       return state;

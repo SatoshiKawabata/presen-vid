@@ -158,6 +158,7 @@ export default function Presentations() {
               overflow: "auto",
               flexShrink: 0,
               flexBasis: "240px",
+              borderRight: "1px solid #bbb",
             }}
           >
             {presentation.slides.map((slide) => {
@@ -225,6 +226,29 @@ export default function Presentations() {
                 </div>
               );
             })}
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                width: "calc(100% - 16px)",
+                margin: "8px",
+              }}
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = "image/*";
+                input.onchange = (e) => {
+                  const files = input.files;
+                  if (files && files.length > 0) {
+                    const file = files[0]!;
+                    dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                  }
+                };
+                input.click();
+              }}
+            >
+              スライドを追加する
+            </Button>
           </div>
           <div style={{ flexGrow: 1 }}>
             <SlideView
