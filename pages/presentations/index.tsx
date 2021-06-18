@@ -8,6 +8,7 @@ import { ListItem, List, Typography } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
 import { v4 as uuidv4 } from "uuid";
+import { useLocale } from "../../src/hooks/useLocale";
 
 export default function Presentations() {
   const router = useRouter();
@@ -25,16 +26,18 @@ export default function Presentations() {
     })();
   }, []);
 
+  const locale = useLocale();
+
   return (
     <>
       <Head>
-        <title>プレゼン一覧</title>
+        <title>{locale.t.PRESENTATION_LIST}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
       <Container>
         <Typography variant="h5" component="h1">
-          新規プレゼンの作成
+          {locale.t.CREATE_NEW_PRESENTATION}
         </Typography>
         <input
           type="file"
@@ -64,7 +67,7 @@ export default function Presentations() {
           }}
         />
         <Typography variant="h5" component="h2">
-          プレゼン一覧
+          {locale.t.PRESENTATION_LIST}
         </Typography>
         <List>
           {presentations.map((presentation) => {

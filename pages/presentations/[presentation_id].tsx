@@ -25,6 +25,7 @@ import {
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { createVideo, download } from "../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import { useLocale } from "../../src/hooks/useLocale";
 
 export default function Presentations() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function Presentations() {
   );
 
   const [isOpenedMenu, setIsOpenedMenu] = useState(false);
+  const locale = useLocale();
 
   useEffect(() => {
     const splited = location.pathname.split("/");
@@ -79,7 +81,7 @@ export default function Presentations() {
   return (
     <>
       <Head>
-        <title>プレゼン</title>
+        <title>{locale.t.PRESENTATION}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header
@@ -93,11 +95,7 @@ export default function Presentations() {
       >
         <List>
           <Tooltip
-            title={
-              isReadyToExport
-                ? ""
-                : "まだ録音されていないスライドがあるので書き出しできません。"
-            }
+            title={isReadyToExport ? "" : locale.t.UNREADY_EXPORT}
             placement="right"
           >
             <ListItem
@@ -128,7 +126,7 @@ export default function Presentations() {
                       durations
                     );
                     const url = URL.createObjectURL(videoBlob);
-                    download(url, "New Presentation.webm");
+                    download(url, `${locale.t.NEW_VIDEO_NAME}.webm`);
                   } catch (e) {
                     console.error(e);
                   }
@@ -139,7 +137,7 @@ export default function Presentations() {
               <ListItemIcon>
                 <GetAppIcon />
               </ListItemIcon>
-              <ListItemText primary="ビデオを書き出す" />
+              <ListItemText primary={locale.t.EXPORT_VIDEO} />
             </ListItem>
           </Tooltip>
         </List>
@@ -211,7 +209,7 @@ export default function Presentations() {
                     </div>
                     {slide.selectedAudioUid && (
                       <Tooltip
-                        title="録音済み"
+                        title={locale.t.RECORDED}
                         placement="right"
                         style={{
                           position: "absolute",
@@ -247,7 +245,7 @@ export default function Presentations() {
                 input.click();
               }}
             >
-              スライドを追加する
+              {locale.t.ADD_SLIDE}
             </Button>
           </div>
           <div style={{ flexGrow: 1 }}>

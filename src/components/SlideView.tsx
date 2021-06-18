@@ -8,6 +8,7 @@ import {
   PresentationState,
 } from "../reducers/PresentationReducer";
 import { v4 as uuidv4 } from "uuid";
+import { useLocale } from "../hooks/useLocale";
 
 interface P {
   slide: Slide;
@@ -28,6 +29,8 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
   const selectedAudio = slide.audios.find(
     (audio) => audio.uid === slide.selectedAudioUid
   );
+
+  const locale = useLocale();
 
   return (
     <>
@@ -63,7 +66,6 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               let duration = 0;
               _recorder.onstart = () => {
                 prevTime = Date.now();
-                console.log("prevTime", prevTime);
                 setRecortingState(_recorder.state);
               };
               _recorder.onpause = () => {
@@ -82,7 +84,9 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                 duration += Date.now() - prevTime;
                 const blob = e.data;
                 const audio: Audio = {
-                  title: `take ${slide.audios.length + 1}`,
+                  title: `${locale.t.NEW_AUDIO_NAME} ${
+                    slide.audios.length + 1
+                  }`,
                   blob,
                   durationMillisec: duration,
                   uid: uuidv4(),
