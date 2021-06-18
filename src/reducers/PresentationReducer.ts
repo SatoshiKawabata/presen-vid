@@ -7,6 +7,7 @@ export interface PresentationState {
   selectedSlideUid?: Slide["uid"];
   presentation?: Presentation;
   isShowBackdrop: boolean;
+  audioDeviceId?: MediaTrackConstraintSet["deviceId"];
 }
 
 export const createInitialState = (): PresentationState => {
@@ -25,6 +26,7 @@ export enum PresentationActionType {
   HIDE_BACKDROP,
   DND_SLIDE,
   ADD_SLIDE,
+  SET_AUDIO_DEVICE,
 }
 
 export type PresentationAction =
@@ -61,6 +63,10 @@ export type PresentationAction =
   | {
       type: PresentationActionType.ADD_SLIDE;
       file: File;
+    }
+  | {
+      type: PresentationActionType.SET_AUDIO_DEVICE;
+      deviceId: MediaDeviceInfo["deviceId"];
     };
 
 export const PresentationReducer = (
@@ -177,6 +183,11 @@ export const PresentationReducer = (
         };
       }
       return state;
+    case PresentationActionType.SET_AUDIO_DEVICE:
+      return {
+        ...state,
+        audioDeviceId: action.deviceId,
+      };
 
     default: {
       return state;

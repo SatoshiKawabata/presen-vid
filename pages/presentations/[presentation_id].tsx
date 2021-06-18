@@ -19,6 +19,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Modal,
   Tooltip,
   Typography,
 } from "@material-ui/core";
@@ -26,6 +27,8 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import { createVideo, download } from "../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../src/hooks/useLocale";
+import SettingsIcon from "@material-ui/icons/Settings";
+import { Settings } from "../../src/components/Settings";
 
 export default function Presentations() {
   const router = useRouter();
@@ -39,6 +42,7 @@ export default function Presentations() {
   );
 
   const [isOpenedMenu, setIsOpenedMenu] = useState(false);
+  const [isOpenedSettingModal, setIsOpenedSettingModal] = useState(false);
   const locale = useLocale();
 
   useEffect(() => {
@@ -140,6 +144,12 @@ export default function Presentations() {
               <ListItemText primary={locale.t.EXPORT_VIDEO} />
             </ListItem>
           </Tooltip>
+          <ListItem button onClick={() => setIsOpenedSettingModal(true)}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary={locale.t.OPEN_SETTINGS} />
+          </ListItem>
         </List>
       </Drawer>
       {presentation && selectedSlide && (
@@ -257,10 +267,17 @@ export default function Presentations() {
           </div>
         </div>
       )}
+      <Modal
+        open={isOpenedSettingModal}
+        onClose={() => setIsOpenedSettingModal(false)}
+        aria-labelledby={locale.t.SETTINGS_TITLE}
+      >
+        <Settings dispatch={dispatch} state={state} />
+      </Modal>
       <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
         <CircularProgress color="inherit" />
         <Typography variant="h5" component="h1" color="inherit">
-          ビデオの書き出し中
+          {locale.t.EXPORTING}
         </Typography>
       </Backdrop>
     </>

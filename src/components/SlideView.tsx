@@ -37,7 +37,11 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
       <div style={{ position: "relative", margin: "16px" }}>
         <img src={URL.createObjectURL(slide.image)} style={{ width: "100%" }} />
         <Tooltip
-          title={state.recordingState === "recording" ? "録音中" : "録音する"}
+          title={
+            state.recordingState === "recording"
+              ? locale.t.RECORDING
+              : locale.t.RECORD
+          }
           open={state.recordingState === "recording"}
           placement="top"
         >
@@ -56,7 +60,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                 return;
               }
               const stream = await navigator.mediaDevices.getUserMedia({
-                audio: true,
+                audio: { deviceId: state.audioDeviceId },
                 video: false,
               });
               const _recorder = new MediaRecorder(stream);

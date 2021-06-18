@@ -9,4 +9,10 @@ export const en = {
   NEW_AUDIO_NAME: "Take",
   UNREADY_EXPORT:
     "Unready to export video because some slides have not recorded.",
+  RECORDING: "Recording",
+  RECORD: "Rcord",
+  OPEN_SETTINGS: "Settings",
+  SETTINGS_TITLE: "Settings",
+  AUDIO_DEVICE_SELECT: "Audio device",
+  EXPORTING: "Exporting vide",
 };

@@ -8,4 +8,10 @@ export const ja = {
   NEW_AUDIO_NAME: "テイク",
   NEW_VIDEO_NAME: "無題のプレゼンテーション",
   UNREADY_EXPORT: "まだ録音されていないスライドがあるので書き出しできません。",
+  RECORDING: "録音中",
+  RECORD: "録音する",
+  OPEN_SETTINGS: "設定を開く",
+  SETTINGS_TITLE: "設定",
+  AUDIO_DEVICE_SELECT: "録音デバイス",
+  EXPORTING: "ビデオの書き出し中",
 };
