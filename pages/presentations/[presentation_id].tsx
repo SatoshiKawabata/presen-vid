@@ -29,6 +29,8 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../src/hooks/useLocale";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { Settings } from "../../src/components/Settings";
+import Link from "next/link";
+import HomeIcon from "@material-ui/icons/Home";
 
 export default function Presentations() {
   const router = useRouter();
@@ -150,6 +152,14 @@ export default function Presentations() {
             </ListItemIcon>
             <ListItemText primary={locale.t.OPEN_SETTINGS} />
           </ListItem>
+          <Link href="/presentations">
+            <ListItem button>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={locale.t.BACK_TO_TOP} />
+            </ListItem>
+          </Link>
         </List>
       </Drawer>
       {presentation && selectedSlide && (
