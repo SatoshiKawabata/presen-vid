@@ -16,4 +16,5 @@ export const en = {
   AUDIO_DEVICE_SELECT: "Audio device",
   EXPORTING: "Exporting vide",
   BACK_TO_TOP: "Back to Top",
+  PRESENTATION_TITLE: "Presentation title",
 };

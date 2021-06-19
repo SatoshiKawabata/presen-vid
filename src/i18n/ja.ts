@@ -15,4 +15,5 @@ export const ja = {
   AUDIO_DEVICE_SELECT: "録音デバイス",
   EXPORTING: "ビデオの書き出し中",
   BACK_TO_TOP: "トップへ戻る",
+  PRESENTATION_TITLE: "プレゼンテーションのタイトル",
 };

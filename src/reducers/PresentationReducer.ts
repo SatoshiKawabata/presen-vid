@@ -27,6 +27,7 @@ export enum PresentationActionType {
   DND_SLIDE,
   ADD_SLIDE,
   SET_AUDIO_DEVICE,
+  SET_PRESENTATION_TITLE,
 }
 
 export type PresentationAction =
@@ -67,6 +68,10 @@ export type PresentationAction =
   | {
       type: PresentationActionType.SET_AUDIO_DEVICE;
       deviceId: MediaDeviceInfo["deviceId"];
+    }
+  | {
+      type: PresentationActionType.SET_PRESENTATION_TITLE;
+      title: Presentation["title"];
     };
 
 export const PresentationReducer = (
@@ -74,6 +79,7 @@ export const PresentationReducer = (
   action: PresentationAction
 ): PresentationState => {
   console.log("reduce", state, action);
+  const { presentation } = state;
   switch (action.type) {
     case PresentationActionType.SET_STATE:
       return {
@@ -163,23 +169,24 @@ export const PresentationReducer = (
       return state;
     case PresentationActionType.ADD_SLIDE:
       const { file } = action;
-      const { presentation } = state;
       if (presentation) {
+        const newPresentation = {
+          ...presentation,
+          slides: [
+            ...presentation.slides,
+            {
+              uid: uuidv4(),
+
+              title: file.name,
+              image: file,
+              audios: [],
+            },
+          ],
+        };
+        savePresentation(newPresentation);
         return {
           ...state,
-          presentation: {
-            ...presentation,
-            slides: [
-              ...presentation.slides,
-              {
-                uid: uuidv4(),
-
-                title: file.name,
-                image: file,
-                audios: [],
-              },
-            ],
-          },
+          presentation: newPresentation,
         };
       }
       return state;
@@ -188,6 +195,19 @@ export const PresentationReducer = (
         ...state,
         audioDeviceId: action.deviceId,
       };
+    case PresentationActionType.SET_PRESENTATION_TITLE:
+      if (presentation) {
+        const newPresentation = {
+          ...presentation,
+          title: action.title,
+        };
+        savePresentation(newPresentation);
+        return {
+          ...state,
+          presentation: newPresentation,
+        };
+      }
+      return state;
 
     default: {
       return state;

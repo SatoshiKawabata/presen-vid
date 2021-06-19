@@ -4,6 +4,7 @@ import {
   makeStyles,
   MenuItem,
   Select,
+  TextField,
   Theme,
   Typography,
 } from "@material-ui/core";
@@ -52,10 +53,30 @@ export const Settings = ({ dispatch, state }: P) => {
 
   return (
     <div className={classes.paper}>
-      <Typography variant="h6" component="h2" color="inherit">
+      <Typography
+        variant="subtitle2"
+        component="h2"
+        color="inherit"
+        style={{ marginBottom: "24px" }}
+      >
         {t.SETTINGS_TITLE}
       </Typography>
-      <InputLabel id="audio-device-select-label">
+      <TextField
+        label={t.PRESENTATION_TITLE}
+        style={{ width: "100%", marginBottom: "24px" }}
+        value={state.presentation?.title}
+        onChange={(e) => {
+          e.target.value;
+          dispatch({
+            type: PresentationActionType.SET_PRESENTATION_TITLE,
+            title: e.target.value,
+          });
+        }}
+      />
+      <InputLabel
+        id="audio-device-select-label"
+        style={{ marginBottom: "8px" }}
+      >
         {t.AUDIO_DEVICE_SELECT}
       </InputLabel>
       <Select
@@ -67,6 +88,7 @@ export const Settings = ({ dispatch, state }: P) => {
             deviceId: e.target.value as string,
           });
         }}
+        style={{ marginBottom: "24px" }}
       >
         {devices.map((device) => {
           return (
