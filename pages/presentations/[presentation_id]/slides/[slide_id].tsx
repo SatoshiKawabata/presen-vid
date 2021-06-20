@@ -1,15 +1,15 @@
 import React, { useEffect, useReducer, useState } from "react";
 import Head from "next/head";
-import { Header } from "../../src/components/Header";
+import { Header } from "../../../../src/components/Header";
 import Dexie from "dexie";
-import { Presentation } from "../../src/types";
+import { Presentation } from "../../../../src/types";
 import { useRouter } from "next/dist/client/router";
-import { SlideView } from "../../src/components/SlideView";
+import { SlideView } from "../../../../src/components/SlideView";
 import {
   createInitialState,
   PresentationActionType,
   PresentationReducer,
-} from "../../src/reducers/PresentationReducer";
+} from "../../../../src/reducers/PresentationReducer";
 import {
   Backdrop,
   Button,
@@ -24,15 +24,15 @@ import {
   Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import { createVideo, download, getImageSize } from "../../src/Utils";
+import { createVideo, download, getImageSize } from "../../../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import { useLocale } from "../../src/hooks/useLocale";
+import { useLocale } from "../../../../src/hooks/useLocale";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { Settings } from "../../src/components/Settings";
+import { Settings } from "../../../../src/components/Settings";
 import Link from "next/link";
 import HomeIcon from "@material-ui/icons/Home";
 
-export default function Presentations() {
+export default function Slide() {
   const router = useRouter();
   const [state, dispatch] = useReducer(
     PresentationReducer,
@@ -48,8 +48,11 @@ export default function Presentations() {
   const locale = useLocale();
 
   useEffect(() => {
-    const splited = location.pathname.split("/");
-    const id = splited[splited.length - 1];
+    if (!router.isReady) {
+      return;
+    }
+    const { presentation_id, slide_id } = router.query;
+    const id = presentation_id;
     if (id && typeof id === "string") {
       const parsedId = parseInt(id);
 
@@ -67,11 +70,19 @@ export default function Presentations() {
           router.replace("/404");
           return Promise.resolve();
         }
+        const slide = presentation.slides.find(
+          (slide) => slide.uid === slide_id
+        );
+        if (!slide) {
+          router.replace(
+            `/presentations/${presentation.id}/slides/${presentation.slides[0]?.uid}`
+          );
+        }
         dispatch({
           type: PresentationActionType.SET_STATE,
           state: {
             presentation,
-            selectedSlideUid: presentation.slides[0]?.uid,
+            selectedSlideUid: slide?.uid || presentation.slides[0]?.uid,
           },
         });
 
@@ -97,7 +108,7 @@ export default function Presentations() {
     } else {
       router.replace("/404");
     }
-  }, []);
+  }, [router.query]);
 
   const isReadyToExport = state.presentation?.slides.every(
     (slide) => slide.audios.length > 0
@@ -213,58 +224,56 @@ export default function Presentations() {
                     position: "relative",
                   }}
                 >
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      dispatch({
-                        type: PresentationActionType.SET_STATE,
-                        state: { selectedSlideUid: slide.uid },
-                      });
-                    }}
-                    draggable={false}
-                    disabled={state.recordingState === "recording"}
+                  <Link
+                    href={`/presentations/${presentation.id}/slides/${slide.uid}`}
                   >
-                    <div
-                      draggable={true}
-                      onDragStartCapture={(e) => {
-                        e.dataTransfer.setData("text/plain", slide.uid);
-                        e.stopPropagation();
-                      }}
-                      onDragOverCapture={(e) => {
-                        e.preventDefault();
-                      }}
-                      onDragEnterCapture={(e) => {
-                        e.preventDefault();
-                      }}
-                      onDropCapture={(e) => {
-                        const fromUid = e.dataTransfer.getData("text/plain");
-                        dispatch({
-                          type: PresentationActionType.DND_SLIDE,
-                          fromUid,
-                          toUid: slide.uid,
-                        });
-                        e.stopPropagation();
-                      }}
+                    <Button
+                      type="button"
+                      draggable={false}
+                      disabled={state.recordingState === "recording"}
                     >
-                      <img
-                        src={URL.createObjectURL(slide.image)}
-                        draggable={false}
-                      />
-                    </div>
-                    {slide.selectedAudioUid && (
-                      <Tooltip
-                        title={locale.t.RECORDED}
-                        placement="right"
-                        style={{
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
+                      <div
+                        draggable={true}
+                        onDragStartCapture={(e) => {
+                          e.dataTransfer.setData("text/plain", slide.uid);
+                          e.stopPropagation();
+                        }}
+                        onDragOverCapture={(e) => {
+                          e.preventDefault();
+                        }}
+                        onDragEnterCapture={(e) => {
+                          e.preventDefault();
+                        }}
+                        onDropCapture={(e) => {
+                          const fromUid = e.dataTransfer.getData("text/plain");
+                          dispatch({
+                            type: PresentationActionType.DND_SLIDE,
+                            fromUid,
+                            toUid: slide.uid,
+                          });
+                          e.stopPropagation();
                         }}
                       >
-                        <CheckCircleIcon color="secondary" />
-                      </Tooltip>
-                    )}
-                  </Button>
+                        <img
+                          src={URL.createObjectURL(slide.image)}
+                          draggable={false}
+                        />
+                      </div>
+                      {slide.selectedAudioUid && (
+                        <Tooltip
+                          title={locale.t.RECORDED}
+                          placement="right"
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                          }}
+                        >
+                          <CheckCircleIcon color="secondary" />
+                        </Tooltip>
+                      )}
+                    </Button>
+                  </Link>
                 </div>
               );
             })}
@@ -279,7 +288,7 @@ export default function Presentations() {
                 const input = document.createElement("input");
                 input.type = "file";
                 input.accept = "image/*";
-                input.onchange = (e) => {
+                input.onchange = () => {
                   const files = input.files;
                   if (files && files.length > 0) {
                     const file = files[0]!;

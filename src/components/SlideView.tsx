@@ -165,6 +165,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
             {slide.audios.map((audio) => {
               return (
                 <MenuItem
+                  key={audio.uid}
                   value={audio.uid}
                   selected={audio.uid === selectedAudio.uid}
                 >

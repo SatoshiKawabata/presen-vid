@@ -75,7 +75,7 @@ export default function Presentations() {
           {presentations.map((presentation) => {
             return (
               <ListItem key={presentation.id}>
-                <Link href={`/presentations/${presentation.id}`}>
+                <Link href={`/presentations/${presentation.id}/slides/0`}>
                   {presentation.title}
                 </Link>
               </ListItem>
