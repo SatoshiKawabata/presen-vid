@@ -7,13 +7,14 @@ export interface PresentationState {
   selectedSlideUid?: Slide["uid"];
   presentation?: Presentation;
   isShowBackdrop: boolean;
-  audioDeviceId?: MediaTrackConstraintSet["deviceId"];
+  audioDeviceId: MediaTrackConstraintSet["deviceId"];
 }
 
 export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
     isShowBackdrop: false,
+    audioDeviceId: "default",
   };
 };
 

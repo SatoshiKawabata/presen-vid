@@ -88,7 +88,7 @@ export const Settings = ({ dispatch, state }: P) => {
             deviceId: e.target.value as string,
           });
         }}
-        style={{ marginBottom: "24px" }}
+        style={{ marginBottom: "24px", width: "100%" }}
       >
         {devices.map((device) => {
           return (
