@@ -61,6 +61,8 @@ export default function Presentations() {
                       audios: [],
                     };
                   }),
+                  width: 0,
+                  height: 0,
                 });
               router.push(`/presentations/${id}`);
             }
