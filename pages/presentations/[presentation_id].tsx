@@ -24,7 +24,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import { createVideo, download } from "../../src/Utils";
+import { createVideo, download, getImageSize } from "../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../src/hooks/useLocale";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -74,6 +74,25 @@ export default function Presentations() {
             selectedSlideUid: presentation.slides[0]?.uid,
           },
         });
+
+        const { slides } = presentation;
+        const sizes = await Promise.all(
+          slides.map((slide) => {
+            return getImageSize(URL.createObjectURL(slide.image));
+          })
+        );
+        const maxSize = { width: 0, height: 0 };
+        for (const size of sizes) {
+          if (size.width > maxSize.width) {
+            maxSize.width = size.width;
+            maxSize.height = size.height;
+          }
+        }
+        dispatch({
+          type: PresentationActionType.SET_PRESENTATION_SIZE,
+          width: maxSize.width,
+          height: maxSize.height,
+        });
       })();
     } else {
       router.replace("/404");
@@ -114,6 +133,10 @@ export default function Presentations() {
                   const audios: Blob[] = [];
                   const durations: number[] = [];
                   const imageFiles: File[] = [];
+                  const size = {
+                    width: state.presentation.width,
+                    height: state.presentation.height,
+                  };
                   for (const slide of state.presentation.slides) {
                     imageFiles.push(slide.image);
                     for (const audio of slide.audios) {
@@ -129,7 +152,8 @@ export default function Presentations() {
                     const videoBlob = await createVideo(
                       imageFiles,
                       audios,
-                      durations
+                      durations,
+                      size
                     );
                     const url = URL.createObjectURL(videoBlob);
                     download(url, `${locale.t.NEW_VIDEO_NAME}.webm`);

@@ -28,6 +28,7 @@ export enum PresentationActionType {
   ADD_SLIDE,
   SET_AUDIO_DEVICE,
   SET_PRESENTATION_TITLE,
+  SET_PRESENTATION_SIZE,
 }
 
 export type PresentationAction =
@@ -72,6 +73,11 @@ export type PresentationAction =
   | {
       type: PresentationActionType.SET_PRESENTATION_TITLE;
       title: Presentation["title"];
+    }
+  | {
+      type: PresentationActionType.SET_PRESENTATION_SIZE;
+      width: number;
+      height: number;
     };
 
 export const PresentationReducer = (
@@ -208,6 +214,18 @@ export const PresentationReducer = (
         };
       }
       return state;
+    case PresentationActionType.SET_PRESENTATION_SIZE:
+      if (presentation) {
+        const newPresentation = updatePresentation(presentation, {
+          width: action.width,
+          height: action.height,
+        });
+        return {
+          ...state,
+          presentation: newPresentation,
+        };
+      }
+      return state;
 
     default: {
       return state;
@@ -224,4 +242,32 @@ const savePresentation = async (presentation: Presentation) => {
   await db
     .table<Omit<Presentation, "id">>("presentations")
     .update(presentation.id, presentation);
+};
+
+const updateSlide = (
+  slides: Slide[],
+  uid: Slide["uid"],
+  properties: Partial<Slide>
+) => {
+  return slides.map((slide) => {
+    if (slide.uid === uid) {
+      return {
+        ...slide,
+        ...properties,
+      };
+    }
+    return slide;
+  });
+};
+
+const updatePresentation = (
+  presentation: Presentation,
+  properties: Partial<Presentation>
+) => {
+  const newPresentation = {
+    ...presentation,
+    ...properties,
+  };
+  savePresentation(newPresentation);
+  return newPresentation;
 };

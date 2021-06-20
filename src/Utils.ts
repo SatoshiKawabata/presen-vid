@@ -51,8 +51,16 @@ const createFFmpegInstance = () => {
 export const createVideo = async (
   imageFiles: File[],
   audios: Blob[],
-  audioDurations: number[]
+  audioDurations: number[],
+  size: { width: number; height: number }
 ) => {
+  let { width, height } = size;
+  if (width % 2 === 1) {
+    width++;
+  }
+  if (height % 2 === 1) {
+    height++;
+  }
   const ffmpeg = createFFmpegInstance();
   await ffmpeg.load();
   let fileList = "";
@@ -89,6 +97,8 @@ export const createVideo = async (
       "copy",
       "-c:v",
       "libx264",
+      "-s",
+      `${width}x${height}`,
       // "-pix_fmt",
       // "yuv420p",
       tmpVideoName
@@ -135,4 +145,14 @@ export const download = (href: string, name: string) => {
   a.href = href;
   a.download = name;
   a.click();
+};
+
+export const getImageSize = async (src: string) => {
+  const img = new Image();
+  img.src = src;
+  await img.decode();
+  return {
+    width: img.naturalWidth,
+    height: img.naturalHeight,
+  };
 };
