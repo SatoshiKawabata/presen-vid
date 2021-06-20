@@ -30,6 +30,7 @@ export enum PresentationActionType {
   SET_AUDIO_DEVICE,
   SET_PRESENTATION_TITLE,
   SET_PRESENTATION_SIZE,
+  CHANGE_SLIDE,
 }
 
 export type PresentationAction =
@@ -79,6 +80,11 @@ export type PresentationAction =
       type: PresentationActionType.SET_PRESENTATION_SIZE;
       width: number;
       height: number;
+    }
+  | {
+      type: PresentationActionType.CHANGE_SLIDE;
+      slideUid: Slide["uid"];
+      image: Slide["image"];
     };
 
 export const PresentationReducer = (
@@ -220,6 +226,19 @@ export const PresentationReducer = (
         const newPresentation = updatePresentation(presentation, {
           width: action.width,
           height: action.height,
+        });
+        return {
+          ...state,
+          presentation: newPresentation,
+        };
+      }
+      return state;
+    case PresentationActionType.CHANGE_SLIDE:
+      if (presentation) {
+        const newPresentation = updatePresentation(presentation, {
+          slides: updateSlide(presentation.slides, action.slideUid, {
+            image: action.image,
+          }),
         });
         return {
           ...state,

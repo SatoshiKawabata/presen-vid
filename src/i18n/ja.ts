@@ -16,4 +16,5 @@ export const ja = {
   EXPORTING: "ビデオの書き出し中",
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
+  CHANGE_SLIDE: "このスライドを変更する",
 };

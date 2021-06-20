@@ -17,4 +17,5 @@ export const en = {
   EXPORTING: "Exporting vide",
   BACK_TO_TOP: "Back to Top",
   PRESENTATION_TITLE: "Presentation title",
+  CHANGE_SLIDE: "Change this slide",
 };

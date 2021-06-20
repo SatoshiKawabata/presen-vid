@@ -10,11 +10,16 @@ import { v4 as uuidv4 } from "uuid";
 import { useLocale } from "../hooks/useLocale";
 import StopIcon from "@material-ui/icons/Stop";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import { MoreButton } from "./MoreButton";
 
 interface P {
   slide: Slide;
   dispatch: Dispatch<PresentationAction>;
   state: PresentationState;
+}
+
+enum MoreMenuItems {
+  CHANGE_SLIDE = "change-slide",
 }
 
 export const SlideView = ({ slide, dispatch, state }: P) => {
@@ -175,6 +180,29 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               style={{ flexGrow: 1 }}
             />
           )}
+          <MoreButton
+            items={[
+              { label: locale.t.CHANGE_SLIDE, uid: MoreMenuItems.CHANGE_SLIDE },
+            ]}
+            onSelect={(item) => {
+              if (item.uid === MoreMenuItems.CHANGE_SLIDE) {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = "image/*";
+                input.onchange = () => {
+                  if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    dispatch({
+                      type: PresentationActionType.CHANGE_SLIDE,
+                      slideUid: slide.uid,
+                      image: file,
+                    });
+                  }
+                };
+                input.click();
+              }
+            }}
+          />
         </div>
       )}
     </>
