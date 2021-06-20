@@ -1,7 +1,6 @@
 import React, { Dispatch, useState } from "react";
 import { Audio, Slide } from "../types";
 import { Fab, MenuItem, Select, Tooltip } from "@material-ui/core";
-import MicIcon from "@material-ui/icons/Mic";
 import {
   PresentationAction,
   PresentationActionType,
@@ -9,6 +8,8 @@ import {
 } from "../reducers/PresentationReducer";
 import { v4 as uuidv4 } from "uuid";
 import { useLocale } from "../hooks/useLocale";
+import StopIcon from "@material-ui/icons/Stop";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 interface P {
   slide: Slide;
@@ -34,25 +35,50 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
 
   return (
     <>
+      <style>{`
+        @keyframes flash {
+          0% {
+            opacity: 1;
+          }
+
+          50% {
+            opacity: 0.5;
+          }
+
+          100% {
+            opacity: 1;
+          }
+        }
+      `}</style>
       <div style={{ position: "relative", margin: "16px" }}>
-        <img src={URL.createObjectURL(slide.image)} style={{ width: "100%" }} />
+        <img
+          src={URL.createObjectURL(slide.image)}
+          style={{
+            width: "100%",
+            filter: "drop-shadow(0px 0px 8px rgba(0,0,0,0.1))",
+          }}
+        />
         <Tooltip
           title={
             state.recordingState === "recording"
               ? locale.t.RECORDING
               : locale.t.RECORD
           }
-          open={state.recordingState === "recording"}
+          open={state.recordingState === "recording" ? true : undefined}
           placement="top"
         >
           <Fab
-            color={
-              state.recordingState === "recording" ? "secondary" : "primary"
-            }
+            color="default"
             style={{
               position: "absolute",
               bottom: "8px",
               left: "8px",
+              backgroundColor: "#f92929",
+              color: "#fff",
+              animation:
+                state.recordingState === "recording"
+                  ? "flash 1s linear infinite"
+                  : "",
             }}
             onClick={async () => {
               if (state.recordingState === "recording" && recorder) {
@@ -105,7 +131,11 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               _recorder.start();
             }}
           >
-            <MicIcon />
+            {state.recordingState === "recording" ? (
+              <StopIcon />
+            ) : (
+              <FiberManualRecordIcon />
+            )}
           </Fab>
         </Tooltip>
       </div>
