@@ -1,5 +1,7 @@
 export const en = {
   CREATE_NEW_PRESENTATION: "Create new presentation",
+  CREATE_NEW_PRESENTATION_DESCRIPTION:
+    "Select slide images(JPEG, PNG etc) of your presentation.",
   PRESENTATION_LIST: "Presentation list",
   PRESENTATION: "Presentation",
   ADD_SLIDE: "Add slide",

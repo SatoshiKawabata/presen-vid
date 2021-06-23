@@ -1,6 +1,8 @@
 export const ja = {
-  CREATE_NEW_PRESENTATION: "新規プレゼンの作成",
-  PRESENTATION_LIST: "プレゼン一覧",
+  CREATE_NEW_PRESENTATION: "新規プレゼンテーションの作成",
+  CREATE_NEW_PRESENTATION_DESCRIPTION:
+    "プレゼンテーションのスライドの画像(JPEG, PNG等)を選択してください。",
+  PRESENTATION_LIST: "プレゼンテーション一覧",
   PRESENTATION: "プレゼンテーション",
   ADD_SLIDE: "スライドを追加する",
   RECORDED: "録音済み",

@@ -36,10 +36,14 @@ export default function Presentations() {
       </Head>
       <Header />
       <Container>
-        <Typography variant="h5" component="h1">
+        <Typography variant="h5" component="h1" style={{ marginTop: 40 }}>
           {locale.t.CREATE_NEW_PRESENTATION}
         </Typography>
+        <Typography variant="body1" component="p" style={{ marginTop: 8 }}>
+          {locale.t.CREATE_NEW_PRESENTATION_DESCRIPTION}
+        </Typography>
         <input
+          style={{ marginTop: 8 }}
           type="file"
           multiple
           accept="image/*"
@@ -68,20 +72,25 @@ export default function Presentations() {
             }
           }}
         />
-        <Typography variant="h5" component="h2">
-          {locale.t.PRESENTATION_LIST}
-        </Typography>
-        <List>
-          {presentations.map((presentation) => {
-            return (
-              <ListItem key={presentation.id}>
-                <Link href={`/presentations/${presentation.id}/slides/0`}>
-                  {presentation.title}
-                </Link>
-              </ListItem>
-            );
-          })}
-        </List>
+
+        {presentations.length > 0 && (
+          <>
+            <Typography variant="h5" component="h2" style={{ marginTop: 32 }}>
+              {locale.t.PRESENTATION_LIST}
+            </Typography>
+            <List>
+              {presentations.map((presentation) => {
+                return (
+                  <ListItem key={presentation.id}>
+                    <Link href={`/presentations/${presentation.id}/slides/0`}>
+                      {presentation.title}
+                    </Link>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </>
+        )}
       </Container>
     </>
   );
