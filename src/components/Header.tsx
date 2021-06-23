@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "next/link";
+import { useLocale } from "../hooks/useLocale";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,6 +23,7 @@ interface P {
 
 export const Header = (p: P) => {
   const classes = useStyles();
+  const { t } = useLocale();
   return (
     <>
       <AppBar position="static">
@@ -39,7 +41,7 @@ export const Header = (p: P) => {
           )}
           <Link href="/presentations">
             <Typography variant="h6" className={classes.title}>
-              Slideshow
+              {t.APP_TITLE}
             </Typography>
           </Link>
         </Toolbar>
