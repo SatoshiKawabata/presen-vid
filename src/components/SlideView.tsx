@@ -1,6 +1,6 @@
 import React, { Dispatch, useState } from "react";
 import { Audio, Slide } from "../types";
-import { Fab, MenuItem, Select, Tooltip } from "@material-ui/core";
+import { Button, MenuItem, Select, Tooltip } from "@material-ui/core";
 import {
   PresentationAction,
   PresentationActionType,
@@ -67,12 +67,12 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           title={
             state.recordingState === "recording"
               ? locale.t.RECORDING
-              : locale.t.RECORD
+              : locale.t.RECORD_PRESENTATION
           }
-          open={state.recordingState === "recording" ? true : undefined}
+          open={state.recordingState === "recording" ? false : undefined}
           placement="top"
         >
-          <Fab
+          <Button
             color="default"
             style={{
               position: "absolute",
@@ -141,11 +141,19 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
             ) : (
               <FiberManualRecordIcon />
             )}
-          </Fab>
+            {state.recordingState === "recording"
+              ? locale.t.RECORDING
+              : locale.t.RECORD}
+          </Button>
         </Tooltip>
       </div>
       {selectedAudio && (
-        <div style={{ display: "flex", margin: "16px" }}>
+        <div
+          style={{
+            display: "flex",
+            padding: "16px",
+          }}
+        >
           <Select
             disabled={state.recordingState === "recording"}
             value={selectedAudio.uid}

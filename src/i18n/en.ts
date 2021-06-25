@@ -12,7 +12,8 @@ export const en = {
   UNREADY_EXPORT:
     "Unready to export video because some slides have not recorded.",
   RECORDING: "Stop Recording",
-  RECORD: "Rcord",
+  RECORD: "Record",
+  RECORD_PRESENTATION: "Rcord your presentation",
   OPEN_SETTINGS: "Settings",
   SETTINGS_TITLE: "Settings",
   AUDIO_DEVICE_SELECT: "Audio device",
