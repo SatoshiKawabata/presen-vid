@@ -231,6 +231,12 @@ export default function Slide() {
                       type="button"
                       draggable={false}
                       disabled={state.recordingState === "recording"}
+                      style={{
+                        border:
+                          slide.uid === selectedSlideUid
+                            ? "2px solid #f50057"
+                            : "none",
+                      }}
                     >
                       <div
                         draggable={true}
