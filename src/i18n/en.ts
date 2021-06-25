@@ -21,5 +21,6 @@ export const en = {
   BACK_TO_TOP: "Back to Top",
   PRESENTATION_TITLE: "Presentation title",
   CHANGE_SLIDE: "Change this slide",
+  DELETE_SLIDE: "Delete this slide",
   APP_TITLE: "Presentation Video Maker",
 };

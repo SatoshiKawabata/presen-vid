@@ -7,6 +7,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 interface Item {
   uid: string;
   label: string;
+  disabled?: boolean;
 }
 
 interface P {
@@ -58,6 +59,7 @@ export const MoreButton = ({ items, onSelect }: P) => {
               handleClose();
               onSelect(item);
             }}
+            disabled={item.disabled}
           >
             {item.label}
           </MenuItem>

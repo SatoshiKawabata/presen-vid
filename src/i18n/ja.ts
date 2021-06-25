@@ -20,5 +20,6 @@ export const ja = {
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",
+  DELETE_SLIDE: "このスライドを削除する",
   APP_TITLE: "プレゼン動画作成ツール",
 };

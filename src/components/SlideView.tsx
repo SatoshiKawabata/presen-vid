@@ -20,6 +20,7 @@ interface P {
 
 enum MoreMenuItems {
   CHANGE_SLIDE = "change-slide",
+  DELETE_SLIDE = "delete-slide",
 }
 
 export const SlideView = ({ slide, dispatch, state }: P) => {
@@ -147,73 +148,86 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           </Button>
         </Tooltip>
       </div>
-      {selectedAudio && (
-        <div
-          style={{
-            display: "flex",
-            padding: "16px",
+      <div
+        style={{
+          display: "flex",
+          padding: "16px",
+          justifyContent: "flex-end",
+        }}
+      >
+        {selectedAudio && (
+          <>
+            <Select
+              disabled={state.recordingState === "recording"}
+              value={selectedAudio.uid}
+              onChange={(e) => {
+                const newSelectedAudio = slide.audios.find(
+                  (audio) => audio.uid === e.target.value
+                );
+                newSelectedAudio &&
+                  dispatch({
+                    type: PresentationActionType.SELECT_AUDIO,
+                    selectedSlideUid: slide.uid,
+                    selectedAudioUid: newSelectedAudio.uid,
+                  });
+              }}
+              style={{ margin: "0 4px", flexGrow: 0.1 }}
+            >
+              {slide.audios.map((audio) => {
+                return (
+                  <MenuItem
+                    key={audio.uid}
+                    value={audio.uid}
+                    selected={audio.uid === selectedAudio.uid}
+                  >
+                    {audio.title}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            {state.recordingState !== "recording" && (
+              <audio
+                src={URL.createObjectURL(selectedAudio.blob)}
+                controls
+                style={{ flexGrow: 1 }}
+              />
+            )}
+          </>
+        )}
+        <MoreButton
+          items={[
+            { label: locale.t.CHANGE_SLIDE, uid: MoreMenuItems.CHANGE_SLIDE },
+            {
+              label: locale.t.DELETE_SLIDE,
+              uid: MoreMenuItems.DELETE_SLIDE,
+              disabled: state.presentation?.slides.length === 1,
+            },
+          ]}
+          onSelect={(item) => {
+            if (item.uid === MoreMenuItems.CHANGE_SLIDE) {
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = "image/*";
+              input.onchange = () => {
+                if (input.files && input.files[0]) {
+                  const file = input.files[0];
+                  dispatch({
+                    type: PresentationActionType.CHANGE_SLIDE,
+                    slideUid: slide.uid,
+                    image: file,
+                  });
+                }
+              };
+              input.click();
+            } else if (item.uid === MoreMenuItems.DELETE_SLIDE) {
+              dispatch({
+                type: PresentationActionType.DELETE_SLIDE,
+                slideUid: slide.uid,
+              });
+            }
           }}
-        >
-          <Select
-            disabled={state.recordingState === "recording"}
-            value={selectedAudio.uid}
-            onChange={(e) => {
-              const newSelectedAudio = slide.audios.find(
-                (audio) => audio.uid === e.target.value
-              );
-              newSelectedAudio &&
-                dispatch({
-                  type: PresentationActionType.SELECT_AUDIO,
-                  selectedSlideUid: slide.uid,
-                  selectedAudioUid: newSelectedAudio.uid,
-                });
-            }}
-            style={{ margin: "0 4px", flexGrow: 0.1 }}
-          >
-            {slide.audios.map((audio) => {
-              return (
-                <MenuItem
-                  key={audio.uid}
-                  value={audio.uid}
-                  selected={audio.uid === selectedAudio.uid}
-                >
-                  {audio.title}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          {state.recordingState !== "recording" && (
-            <audio
-              src={URL.createObjectURL(selectedAudio.blob)}
-              controls
-              style={{ flexGrow: 1 }}
-            />
-          )}
-          <MoreButton
-            items={[
-              { label: locale.t.CHANGE_SLIDE, uid: MoreMenuItems.CHANGE_SLIDE },
-            ]}
-            onSelect={(item) => {
-              if (item.uid === MoreMenuItems.CHANGE_SLIDE) {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = "image/*";
-                input.onchange = () => {
-                  if (input.files && input.files[0]) {
-                    const file = input.files[0];
-                    dispatch({
-                      type: PresentationActionType.CHANGE_SLIDE,
-                      slideUid: slide.uid,
-                      image: file,
-                    });
-                  }
-                };
-                input.click();
-              }
-            }}
-          />
-        </div>
-      )}
+        />
+      </div>
     </>
   );
 };

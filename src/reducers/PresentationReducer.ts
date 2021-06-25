@@ -31,6 +31,7 @@ export enum PresentationActionType {
   SET_PRESENTATION_TITLE,
   SET_PRESENTATION_SIZE,
   CHANGE_SLIDE,
+  DELETE_SLIDE,
 }
 
 export type PresentationAction =
@@ -85,6 +86,10 @@ export type PresentationAction =
       type: PresentationActionType.CHANGE_SLIDE;
       slideUid: Slide["uid"];
       image: Slide["image"];
+    }
+  | {
+      type: PresentationActionType.DELETE_SLIDE;
+      slideUid: Slide["uid"];
     };
 
 export const PresentationReducer = (
@@ -246,7 +251,26 @@ export const PresentationReducer = (
         };
       }
       return state;
-
+    case PresentationActionType.DELETE_SLIDE:
+      if (presentation) {
+        let deletedSlideIndex: number = 0;
+        const newPresentation = updatePresentation(presentation, {
+          slides: presentation.slides.filter((slide, index) => {
+            deletedSlideIndex = index;
+            return slide.uid !== action.slideUid;
+          }),
+        });
+        const nextSelectedSlideIndex =
+          deletedSlideIndex >= newPresentation.slides.length
+            ? newPresentation.slides.length - 1
+            : deletedSlideIndex;
+        return {
+          ...state,
+          presentation: newPresentation,
+          selectedSlideUid: newPresentation.slides[nextSelectedSlideIndex]?.uid,
+        };
+      }
+      return state;
     default: {
       return state;
     }
