@@ -48,6 +48,8 @@ const createFFmpegInstance = () => {
   return ffmpeg;
 };
 
+const ffmpeg = createFFmpegInstance();
+
 export const createVideo = async (
   imageFiles: File[],
   audios: Blob[],
@@ -61,8 +63,9 @@ export const createVideo = async (
   if (height % 2 === 1) {
     height++;
   }
-  const ffmpeg = createFFmpegInstance();
-  await ffmpeg.load();
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
+  }
   let fileList = "";
   const imageNames: string[] = [];
   const audioNames: string[] = [];
@@ -155,4 +158,21 @@ export const getImageSize = async (src: string) => {
     width: img.naturalWidth,
     height: img.naturalHeight,
   };
+};
+
+export const transcodeWebm2Wav = async (audio: Blob) => {
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
+  }
+
+  const audioInputName = `${uuidv4()}.webm`;
+  const audioOutputName = `${uuidv4()}.wav`;
+  const fetchedAudio = await fetchFile(audio);
+  ffmpeg.FS("writeFile", audioInputName, fetchedAudio);
+  await ffmpeg.run("-i", audioInputName, "-ac", "2", audioOutputName);
+  const data = ffmpeg.FS("readFile", audioOutputName);
+  const result = new Blob([data.buffer], { type: "audio/wav" });
+  ffmpeg.FS("unlink", audioInputName);
+  ffmpeg.FS("unlink", audioOutputName);
+  return result;
 };

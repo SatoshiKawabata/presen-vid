@@ -1,6 +1,14 @@
 import React, { Dispatch, useState } from "react";
 import { Audio, Slide } from "../types";
-import { Button, MenuItem, Select, Tooltip } from "@material-ui/core";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  MenuItem,
+  Select,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import {
   PresentationAction,
   PresentationActionType,
@@ -11,6 +19,7 @@ import { useLocale } from "../hooks/useLocale";
 import StopIcon from "@material-ui/icons/Stop";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { MoreButton } from "./MoreButton";
+import { transcodeWebm2Wav } from "../Utils";
 
 interface P {
   slide: Slide;
@@ -38,6 +47,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
   );
 
   const locale = useLocale();
+  const [isShowBackdrop, setIsShowBackdrop] = useState(false);
 
   return (
     <>
@@ -116,14 +126,17 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                 setRecortingState(_recorder.state);
               };
               _recorder.ondataavailable = async (e) => {
+                setIsShowBackdrop(true);
                 stream.getTracks().forEach((track) => track.stop());
                 duration += Date.now() - prevTime;
                 const blob = e.data;
+                const blobForPreview = await transcodeWebm2Wav(blob);
                 const audio: Audio = {
                   title: `${locale.t.NEW_AUDIO_NAME} ${
                     slide.audios.length + 1
                   }`,
                   blob,
+                  blobForPreview,
                   durationMillisec: duration,
                   uid: uuidv4(),
                 };
@@ -133,6 +146,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                   audio,
                   recordingState: _recorder.state,
                 });
+                setIsShowBackdrop(false);
               };
               _recorder.start();
             }}
@@ -187,7 +201,9 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
             </Select>
             {state.recordingState !== "recording" && (
               <audio
-                src={URL.createObjectURL(selectedAudio.blob)}
+                src={URL.createObjectURL(
+                  selectedAudio.blobForPreview || selectedAudio.blob
+                )}
                 controls
                 style={{ flexGrow: 1 }}
               />
@@ -228,6 +244,12 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           }}
         />
       </div>
+      <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
+        <CircularProgress color="inherit" />
+        <Typography variant="h5" component="h1" color="inherit">
+          {locale.t.SAVING_AUDIO}
+        </Typography>
+      </Backdrop>
     </>
   );
 };

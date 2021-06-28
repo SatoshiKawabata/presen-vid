@@ -12,6 +12,7 @@ export const ja = {
   UNREADY_EXPORT: "まだ録音されていないスライドがあるので書き出しできません。",
   RECORDING: "録音を止める",
   RECORD: "録音する",
+  SAVING_AUDIO: "音声を保存しています",
   RECORD_PRESENTATION: "プレゼンテーションを録音する",
   OPEN_SETTINGS: "設定を開く",
   SETTINGS_TITLE: "設定",
