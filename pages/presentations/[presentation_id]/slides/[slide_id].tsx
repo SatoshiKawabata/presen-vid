@@ -31,6 +31,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import { Settings } from "../../../../src/components/Settings";
 import Link from "next/link";
 import HomeIcon from "@material-ui/icons/Home";
+import JSZip from "jszip";
 
 export default function Slide() {
   const router = useRouter();
@@ -38,7 +39,8 @@ export default function Slide() {
     PresentationReducer,
     createInitialState()
   );
-  const { presentation, selectedSlideUid, isShowBackdrop } = state;
+  const { presentation, selectedSlideUid, isShowBackdrop, backdropMessage } =
+    state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
   );
@@ -140,7 +142,10 @@ export default function Slide() {
               onClick={async () => {
                 setIsOpenedMenu(false);
                 if (state.presentation) {
-                  dispatch({ type: PresentationActionType.SHOW_BACKDROP });
+                  dispatch({
+                    type: PresentationActionType.SHOW_BACKDROP,
+                    message: locale.t.EXPORTING_VIDEO,
+                  });
                   const audios: Blob[] = [];
                   const durations: number[] = [];
                   const imageFiles: File[] = [];
@@ -195,6 +200,37 @@ export default function Slide() {
               <ListItemText primary={locale.t.BACK_TO_TOP} />
             </ListItem>
           </Link>
+          {presentation && (
+            <ListItem
+              button
+              onClick={async () => {
+                dispatch({
+                  type: PresentationActionType.SHOW_BACKDROP,
+                  message: locale.t.EXPORTING_DATA,
+                });
+                const zip = new JSZip();
+                presentation.slides.map((slide) => {
+                  zip.file(slide.uid, slide.image);
+                  slide.audios.forEach((audio) => {
+                    zip.file(audio.uid, audio.blob);
+                  });
+                });
+                const json = JSON.stringify(presentation);
+                zip.file("presentation.json", json);
+                const blob = await zip.generateAsync({ type: "blob" });
+                download(
+                  URL.createObjectURL(blob),
+                  `${presentation.title}.pvm`
+                );
+                dispatch({ type: PresentationActionType.HIDE_BACKDROP });
+              }}
+            >
+              <ListItemIcon>
+                <GetAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={locale.t.EXPORT_PRESENTATION_DATA} />
+            </ListItem>
+          )}
         </List>
       </Drawer>
       {presentation && selectedSlide && (
@@ -326,7 +362,7 @@ export default function Slide() {
       <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
         <CircularProgress color="inherit" />
         <Typography variant="h5" component="h1" color="inherit">
-          {locale.t.EXPORTING}
+          {backdropMessage}
         </Typography>
       </Backdrop>
     </>

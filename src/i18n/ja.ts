@@ -17,10 +17,12 @@ export const ja = {
   OPEN_SETTINGS: "設定を開く",
   SETTINGS_TITLE: "設定",
   AUDIO_DEVICE_SELECT: "録音デバイス",
-  EXPORTING: "ビデオの書き出し中",
+  EXPORTING_VIDEO: "ビデオの書き出し中...",
+  EXPORTING_DATA: "プレゼンテーションデータの書き出し中...",
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",
   DELETE_SLIDE: "このスライドを削除する",
   APP_TITLE: "プレゼン動画作成ツール",
+  EXPORT_PRESENTATION_DATA: "プレゼンテーションデータを書き出す",
 };

@@ -18,10 +18,12 @@ export const en = {
   OPEN_SETTINGS: "Settings",
   SETTINGS_TITLE: "Settings",
   AUDIO_DEVICE_SELECT: "Audio device",
-  EXPORTING: "Exporting vide",
+  EXPORTING_VIDEO: "Exporting video...",
+  EXPORTING_DATA: "Exporting presentation data...",
   BACK_TO_TOP: "Back to Top",
   PRESENTATION_TITLE: "Presentation title",
   CHANGE_SLIDE: "Change this slide",
   DELETE_SLIDE: "Delete this slide",
   APP_TITLE: "Presentation Video Maker",
+  EXPORT_PRESENTATION_DATA: "Export presentation data",
 };

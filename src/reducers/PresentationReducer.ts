@@ -7,6 +7,7 @@ export interface PresentationState {
   selectedSlideUid?: Slide["uid"];
   presentation?: Presentation;
   isShowBackdrop: boolean;
+  backdropMessage: string;
   audioDeviceId: MediaTrackConstraintSet["deviceId"];
 }
 
@@ -14,6 +15,7 @@ export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
     isShowBackdrop: false,
+    backdropMessage: "",
     audioDeviceId: "default",
   };
 };
@@ -56,6 +58,7 @@ export type PresentationAction =
     }
   | {
       type: PresentationActionType.SHOW_BACKDROP;
+      message: string;
     }
   | {
       type: PresentationActionType.HIDE_BACKDROP;
@@ -158,6 +161,7 @@ export const PresentationReducer = (
       return {
         ...state,
         isShowBackdrop: true,
+        backdropMessage: action.message,
       };
     case PresentationActionType.HIDE_BACKDROP:
       return {
