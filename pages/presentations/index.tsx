@@ -4,11 +4,13 @@ import Link from "next/link";
 import { Header } from "../../src/components/Header";
 import Dexie from "dexie";
 import { Presentation } from "../../src/types";
-import { ListItem, List, Typography } from "@material-ui/core";
+import { ListItem, List, Typography, Button } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
 import { v4 as uuidv4 } from "uuid";
 import { useLocale } from "../../src/hooks/useLocale";
+import { importFile } from "../../src/Utils";
+import JSZip from "jszip";
 
 export default function Presentations() {
   const router = useRouter();
@@ -72,6 +74,52 @@ export default function Presentations() {
             }
           }}
         />
+        <Typography variant="h5" component="h1" style={{ marginTop: 40 }}>
+          {locale.t.IMPORT_PRESENTATION_DATA}
+        </Typography>
+        <Typography variant="body1" component="p" style={{ marginTop: 8 }}>
+          {locale.t.IMPORT_PRESENTATION_DATA_DESCRIPTION}
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={async () => {
+            const files = await importFile();
+            const file = files[0];
+            if (file && file.name.endsWith(".pvm")) {
+              const res = await JSZip.loadAsync(file);
+              const fileNames = Object.keys(res.files);
+              let obj: Presentation;
+              const blobMap = new Map<string, Blob>();
+              for (const fileName of fileNames) {
+                const file = res.files[fileName]!;
+                if (file.name.endsWith(".json")) {
+                  const str = await file.async("string");
+                  obj = JSON.parse(str);
+                } else {
+                  const blob = await file.async("blob");
+                  blobMap.set(fileName, blob);
+                }
+              }
+              obj!.slides.forEach((slide) => {
+                const blob = blobMap.get(slide.uid)!;
+                const image = new File([blob], slide.uid);
+                slide.image = image;
+                slide.audios.forEach((audio) => {
+                  audio.blob = blobMap.get(audio.uid)!;
+                  audio.blobForPreview = blobMap.get(`${audio.uid}.preview`)!;
+                });
+              });
+              console.log(obj!, blobMap);
+              // TODO ファイルのデータをindexedDBに保存
+              // TODO /presentations/[id] に遷移
+            } else {
+              // TODO: エラー表示
+            }
+          }}
+        >
+          {locale.t.IMPORT}
+        </Button>
 
         {presentations.length > 0 && (
           <>

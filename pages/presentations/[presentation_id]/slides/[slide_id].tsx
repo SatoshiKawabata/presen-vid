@@ -24,7 +24,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import { createVideo, download, getImageSize } from "../../../../src/Utils";
+import {
+  createVideo,
+  download,
+  getImageSize,
+  importFile,
+} from "../../../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../../../src/hooks/useLocale";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -213,6 +218,9 @@ export default function Slide() {
                   zip.file(slide.uid, slide.image);
                   slide.audios.forEach((audio) => {
                     zip.file(audio.uid, audio.blob);
+                    if (audio.blobForPreview) {
+                      zip.file(`${audio.uid}.preview`, audio.blobForPreview);
+                    }
                   });
                 });
                 const json = JSON.stringify(presentation);
@@ -326,18 +334,12 @@ export default function Slide() {
                 width: "calc(100% - 16px)",
                 margin: "8px",
               }}
-              onClick={() => {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = "image/*";
-                input.onchange = () => {
-                  const files = input.files;
-                  if (files && files.length > 0) {
-                    const file = files[0]!;
-                    dispatch({ type: PresentationActionType.ADD_SLIDE, file });
-                  }
-                };
-                input.click();
+              onClick={async () => {
+                const files = await importFile("image/*");
+                if (files && files.length > 0) {
+                  const file = files[0]!;
+                  dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                }
               }}
             >
               {locale.t.ADD_SLIDE}
