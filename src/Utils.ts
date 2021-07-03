@@ -107,8 +107,30 @@ export const createVideo = async (
       tmpVideoName
     );
     fileList += `file '${tmpVideoName}'\n`;
+    // 最後に無音を追加する(https://github.com/SatoshiKawabata/montage/issues/33)
+    if (i === imageFiles.length - 1) {
+      console.log("無音動画");
+      const tmpVideoName = `tmp_${imageName}_last.mp4`;
+      await ffmpeg.run(
+        "-framerate",
+        "30",
+        "-loop", // 1枚の画像をループさせる
+        "1",
+        "-i",
+        imageName,
+        "-t",
+        "5", // 5秒の無音の動画
+        "-c:a",
+        "copy",
+        "-c:v",
+        "libx264",
+        "-s",
+        `${width}x${height}`,
+        tmpVideoName
+      );
+      fileList += `file '${tmpVideoName}'\n`;
+    }
   }
-  console.log("fileList", fileList);
   // 画像のみの動画ファイルのリストのテキストファイルを作る
   ffmpeg.FS("writeFile", "fileList.txt", new TextEncoder().encode(fileList));
   // 動画を連結する
