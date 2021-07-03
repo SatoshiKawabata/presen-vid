@@ -4,7 +4,14 @@ import Link from "next/link";
 import { Header } from "../../src/components/Header";
 import Dexie from "dexie";
 import { Presentation } from "../../src/types";
-import { ListItem, List, Typography, Button } from "@material-ui/core";
+import {
+  ListItem,
+  List,
+  Typography,
+  Button,
+  Backdrop,
+  CircularProgress,
+} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +22,7 @@ import JSZip from "jszip";
 export default function Presentations() {
   const router = useRouter();
   const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [backdropMessage, setBackdropMessage] = useState<string | null>(null);
   useEffect(() => {
     (async () => {
       const db = new Dexie("montage");
@@ -85,6 +93,7 @@ export default function Presentations() {
           color="primary"
           onClick={async () => {
             const files = await importFile();
+            setBackdropMessage(locale.t.LOADING_DATA);
             const file = files[0];
             if (file && file.name.endsWith(".pvm")) {
               const res = await JSZip.loadAsync(file);
@@ -102,6 +111,7 @@ export default function Presentations() {
                 }
               }
               if (!obj) {
+                setBackdropMessage(null);
                 return;
               }
               obj.slides.forEach((slide) => {
@@ -113,7 +123,6 @@ export default function Presentations() {
                   audio.blobForPreview = blobMap.get(`${audio.uid}.preview`)!;
                 });
               });
-              console.log(obj, blobMap);
               // Save to indexedDB
               const db = new Dexie("montage");
               db.version(1).stores({
@@ -132,6 +141,7 @@ export default function Presentations() {
             } else {
               // TODO: エラー表示
             }
+            setBackdropMessage(null);
           }}
         >
           {locale.t.IMPORT}
@@ -156,6 +166,15 @@ export default function Presentations() {
           </>
         )}
       </Container>
+      <Backdrop
+        open={backdropMessage != null}
+        style={{ zIndex: 9999, color: "#fff" }}
+      >
+        <CircularProgress color="inherit" />
+        <Typography variant="h5" component="h1" color="inherit">
+          {backdropMessage}
+        </Typography>
+      </Backdrop>
     </>
   );
 }

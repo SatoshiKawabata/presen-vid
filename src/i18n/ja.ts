@@ -23,6 +23,7 @@ export const ja = {
   AUDIO_DEVICE_SELECT: "録音デバイス",
   EXPORTING_VIDEO: "ビデオの書き出し中...",
   EXPORTING_DATA: "プレゼンテーションデータの書き出し中...",
+  LOADING_DATA: "プレゼンテーションデータの読み込み中...",
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",

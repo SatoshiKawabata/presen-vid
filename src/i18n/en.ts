@@ -23,6 +23,7 @@ export const en = {
   AUDIO_DEVICE_SELECT: "Audio device",
   EXPORTING_VIDEO: "Exporting video...",
   EXPORTING_DATA: "Exporting presentation data...",
+  LOADING_DATA: "Loading presentation data...",
   BACK_TO_TOP: "Back to Top",
   PRESENTATION_TITLE: "Presentation title",
   CHANGE_SLIDE: "Change this slide",
