@@ -41,7 +41,7 @@ export const Settings = ({ dispatch, state }: P) => {
     })();
   }, []);
 
-  const classes = useStyles();
+  const classes = useModalPaperStyles();
   const { t } = useLocale();
 
   console.log(
@@ -106,7 +106,7 @@ export const Settings = ({ dispatch, state }: P) => {
   );
 };
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useModalPaperStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: "absolute",

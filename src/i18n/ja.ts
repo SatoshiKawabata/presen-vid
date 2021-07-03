@@ -27,8 +27,12 @@ export const ja = {
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",
+  DELETE_SLIDE_MODAL_TITLE:
+    "本当にこのスライドを削除しますか？(削除すると復元できません)",
   DELETE_SLIDE: "このスライドを削除する",
   APP_TITLE: "プレゼン動画作成ツール",
   EXPORT_PRESENTATION_DATA: "プレゼンテーションデータを書き出す",
   INVALID_FILE_TYPE: `プレゼンテーションデータのファイル形式が正しくないので、読み込みできません。".pvm"形式のファイルを読み込んでください。`,
+  YES: `はい`,
+  NO: `いいえ`,
 };

@@ -1,6 +1,13 @@
 import React, { Dispatch, useContext, useState } from "react";
 import { Audio, Slide } from "../types";
-import { Button, MenuItem, Select, Tooltip } from "@material-ui/core";
+import {
+  Button,
+  MenuItem,
+  Modal,
+  Select,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import {
   PresentationAction,
   PresentationActionType,
@@ -13,6 +20,7 @@ import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { MoreButton } from "./MoreButton";
 import { transcodeWebm2Wav } from "../Utils";
 import { GlobalContext } from "../context/globalContext";
+import { useModalPaperStyles } from "./Settings";
 
 interface P {
   slide: Slide;
@@ -34,6 +42,9 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
       recordingState,
     });
   };
+  const [isOpenedDeleteSlideModal, setIsOpenedDeleteSlideModal] =
+    useState(false);
+  const classes = useModalPaperStyles();
 
   const selectedAudio = slide.audios.find(
     (audio) => audio.uid === slide.selectedAudioUid
@@ -228,14 +239,47 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               };
               input.click();
             } else if (item.uid === MoreMenuItems.DELETE_SLIDE) {
-              dispatch({
-                type: PresentationActionType.DELETE_SLIDE,
-                slideUid: slide.uid,
-              });
+              setIsOpenedDeleteSlideModal(true);
             }
           }}
         />
       </div>
+      <Modal
+        open={isOpenedDeleteSlideModal}
+        onClose={() => setIsOpenedDeleteSlideModal(false)}
+        aria-labelledby={locale.t.DELETE_SLIDE_MODAL_TITLE}
+      >
+        <div className={classes.paper}>
+          <Typography
+            variant="subtitle2"
+            component="h2"
+            color="inherit"
+            style={{ marginBottom: "24px" }}
+          >
+            {locale.t.DELETE_SLIDE_MODAL_TITLE}
+          </Typography>
+          <Button
+            onClick={() => {
+              setIsOpenedDeleteSlideModal(false);
+            }}
+            color="default"
+          >
+            {locale.t.NO}
+          </Button>
+          <Button
+            onClick={() => {
+              dispatch({
+                type: PresentationActionType.DELETE_SLIDE,
+                slideUid: slide.uid,
+              });
+              setIsOpenedDeleteSlideModal(false);
+            }}
+            color="primary"
+          >
+            {locale.t.YES}
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 };
