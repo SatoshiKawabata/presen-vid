@@ -150,6 +150,26 @@ export const download = (href: string, name: string) => {
   a.click();
 };
 
+export const importFile = (accept?: string, multiple: boolean = false) => {
+  return new Promise<FileList>((res, rej) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    if (accept) {
+      input.accept = accept;
+    }
+    input.multiple = multiple;
+    input.onchange = () => {
+      const files = input.files;
+      if (files) {
+        res(files);
+      } else {
+        rej();
+      }
+    };
+    input.click();
+  });
+};
+
 export const getImageSize = async (src: string) => {
   const img = new Image();
   img.src = src;

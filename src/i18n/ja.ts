@@ -2,6 +2,10 @@ export const ja = {
   CREATE_NEW_PRESENTATION: "新規プレゼンテーションの作成",
   CREATE_NEW_PRESENTATION_DESCRIPTION:
     "プレゼンテーションのスライドの画像(JPEG, PNG等)を選択してください。",
+  IMPORT_PRESENTATION_DATA: "プレゼンテーションデータの読み込み",
+  IMPORT_PRESENTATION_DATA_DESCRIPTION:
+    "プレゼンテーションデータ(.pvm)を読み込んでください。",
+  IMPORT: "読み込む",
   PRESENTATION_LIST: "プレゼンテーション一覧",
   PRESENTATION: "プレゼンテーション",
   ADD_SLIDE: "スライドを追加する",
@@ -17,10 +21,14 @@ export const ja = {
   OPEN_SETTINGS: "設定を開く",
   SETTINGS_TITLE: "設定",
   AUDIO_DEVICE_SELECT: "録音デバイス",
-  EXPORTING: "ビデオの書き出し中",
+  EXPORTING_VIDEO: "ビデオの書き出し中...",
+  EXPORTING_DATA: "プレゼンテーションデータの書き出し中...",
+  LOADING_DATA: "プレゼンテーションデータの読み込み中...",
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",
   DELETE_SLIDE: "このスライドを削除する",
   APP_TITLE: "プレゼン動画作成ツール",
+  EXPORT_PRESENTATION_DATA: "プレゼンテーションデータを書き出す",
+  INVALID_FILE_TYPE: `プレゼンテーションデータのファイル形式が正しくないので、読み込みできません。".pvm"形式のファイルを読み込んでください。`,
 };

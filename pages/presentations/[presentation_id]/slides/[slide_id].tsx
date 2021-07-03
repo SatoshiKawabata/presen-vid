@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import Head from "next/head";
 import { Header } from "../../../../src/components/Header";
 import Dexie from "dexie";
@@ -11,9 +11,7 @@ import {
   PresentationReducer,
 } from "../../../../src/reducers/PresentationReducer";
 import {
-  Backdrop,
   Button,
-  CircularProgress,
   Drawer,
   List,
   ListItem,
@@ -21,16 +19,22 @@ import {
   ListItemText,
   Modal,
   Tooltip,
-  Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import { createVideo, download, getImageSize } from "../../../../src/Utils";
+import {
+  createVideo,
+  download,
+  getImageSize,
+  importFile,
+} from "../../../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../../../src/hooks/useLocale";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { Settings } from "../../../../src/components/Settings";
 import Link from "next/link";
 import HomeIcon from "@material-ui/icons/Home";
+import JSZip from "jszip";
+import { GlobalContext } from "../../../../src/context/globalContext";
 
 export default function Slide() {
   const router = useRouter();
@@ -38,7 +42,8 @@ export default function Slide() {
     PresentationReducer,
     createInitialState()
   );
-  const { presentation, selectedSlideUid, isShowBackdrop } = state;
+  const { setBackdropState } = useContext(GlobalContext);
+  const { presentation, selectedSlideUid } = state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
   );
@@ -140,7 +145,7 @@ export default function Slide() {
               onClick={async () => {
                 setIsOpenedMenu(false);
                 if (state.presentation) {
-                  dispatch({ type: PresentationActionType.SHOW_BACKDROP });
+                  setBackdropState({ message: locale.t.EXPORTING_VIDEO });
                   const audios: Blob[] = [];
                   const durations: number[] = [];
                   const imageFiles: File[] = [];
@@ -171,7 +176,7 @@ export default function Slide() {
                   } catch (e) {
                     console.error(e);
                   }
-                  dispatch({ type: PresentationActionType.HIDE_BACKDROP });
+                  setBackdropState(null);
                 }
               }}
             >
@@ -195,6 +200,37 @@ export default function Slide() {
               <ListItemText primary={locale.t.BACK_TO_TOP} />
             </ListItem>
           </Link>
+          {presentation && (
+            <ListItem
+              button
+              onClick={async () => {
+                setBackdropState({ message: locale.t.EXPORTING_DATA });
+                const zip = new JSZip();
+                presentation.slides.map((slide) => {
+                  zip.file(slide.uid, slide.image);
+                  slide.audios.forEach((audio) => {
+                    zip.file(audio.uid, audio.blob);
+                    if (audio.blobForPreview) {
+                      zip.file(`${audio.uid}.preview`, audio.blobForPreview);
+                    }
+                  });
+                });
+                const json = JSON.stringify(presentation);
+                zip.file("presentation.json", json);
+                const blob = await zip.generateAsync({ type: "blob" });
+                download(
+                  URL.createObjectURL(blob),
+                  `${presentation.title}.pvm`
+                );
+                setBackdropState(null);
+              }}
+            >
+              <ListItemIcon>
+                <GetAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={locale.t.EXPORT_PRESENTATION_DATA} />
+            </ListItem>
+          )}
         </List>
       </Drawer>
       {presentation && selectedSlide && (
@@ -290,18 +326,12 @@ export default function Slide() {
                 width: "calc(100% - 16px)",
                 margin: "8px",
               }}
-              onClick={() => {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = "image/*";
-                input.onchange = () => {
-                  const files = input.files;
-                  if (files && files.length > 0) {
-                    const file = files[0]!;
-                    dispatch({ type: PresentationActionType.ADD_SLIDE, file });
-                  }
-                };
-                input.click();
+              onClick={async () => {
+                const files = await importFile("image/*");
+                if (files && files.length > 0) {
+                  const file = files[0]!;
+                  dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                }
               }}
             >
               {locale.t.ADD_SLIDE}
@@ -323,12 +353,6 @@ export default function Slide() {
       >
         <Settings dispatch={dispatch} state={state} />
       </Modal>
-      <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
-        <CircularProgress color="inherit" />
-        <Typography variant="h5" component="h1" color="inherit">
-          {locale.t.EXPORTING}
-        </Typography>
-      </Backdrop>
     </>
   );
 }

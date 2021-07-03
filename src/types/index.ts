@@ -18,6 +18,6 @@ export interface Audio {
   uid: string;
   title: string;
   blob: Blob;
-  blobForPreview: Blob;
+  blobForPreview?: Blob;
   durationMillisec: number;
 }
