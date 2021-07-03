@@ -30,4 +30,5 @@ export const ja = {
   DELETE_SLIDE: "このスライドを削除する",
   APP_TITLE: "プレゼン動画作成ツール",
   EXPORT_PRESENTATION_DATA: "プレゼンテーションデータを書き出す",
+  INVALID_FILE_TYPE: `プレゼンテーションデータのファイル形式が正しくないので、読み込みできません。".pvm"形式のファイルを読み込んでください。`,
 };

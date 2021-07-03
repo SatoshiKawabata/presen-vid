@@ -30,4 +30,5 @@ export const en = {
   DELETE_SLIDE: "Delete this slide",
   APP_TITLE: "Presentation Video Maker",
   EXPORT_PRESENTATION_DATA: "Export presentation data",
+  INVALID_FILE_TYPE: `Invalid file type so can't load file. Please load ".pvm" file type.`,
 };

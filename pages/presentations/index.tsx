@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Header } from "../../src/components/Header";
 import Dexie from "dexie";
 import { Presentation } from "../../src/types";
-import {
-  ListItem,
-  List,
-  Typography,
-  Button,
-  Backdrop,
-  CircularProgress,
-} from "@material-ui/core";
+import { ListItem, List, Typography, Button } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
 import { v4 as uuidv4 } from "uuid";
 import { useLocale } from "../../src/hooks/useLocale";
 import { importFile } from "../../src/Utils";
 import JSZip from "jszip";
+import { GlobalContext } from "../../src/context/globalContext";
 
 export default function Presentations() {
   const router = useRouter();
   const [presentations, setPresentations] = useState<Presentation[]>([]);
-  const [backdropMessage, setBackdropMessage] = useState<string | null>(null);
+  const { setSnackbarState, setBackdropState } = useContext(GlobalContext);
+
   useEffect(() => {
     (async () => {
       const db = new Dexie("montage");
@@ -93,7 +88,7 @@ export default function Presentations() {
           color="primary"
           onClick={async () => {
             const files = await importFile();
-            setBackdropMessage(locale.t.LOADING_DATA);
+            setBackdropState({ message: locale.t.LOADING_DATA });
             const file = files[0];
             if (file && file.name.endsWith(".pvm")) {
               const res = await JSZip.loadAsync(file);
@@ -111,7 +106,7 @@ export default function Presentations() {
                 }
               }
               if (!obj) {
-                setBackdropMessage(null);
+                setBackdropState(null);
                 return;
               }
               obj.slides.forEach((slide) => {
@@ -139,9 +134,12 @@ export default function Presentations() {
                 .add(newPresentationData);
               router.push(`/presentations/${id}`);
             } else {
-              // TODO: エラー表示
+              setSnackbarState({
+                message: locale.t.INVALID_FILE_TYPE,
+                type: "error",
+              });
             }
-            setBackdropMessage(null);
+            setBackdropState(null);
           }}
         >
           {locale.t.IMPORT}
@@ -166,15 +164,6 @@ export default function Presentations() {
           </>
         )}
       </Container>
-      <Backdrop
-        open={backdropMessage != null}
-        style={{ zIndex: 9999, color: "#fff" }}
-      >
-        <CircularProgress color="inherit" />
-        <Typography variant="h5" component="h1" color="inherit">
-          {backdropMessage}
-        </Typography>
-      </Backdrop>
     </>
   );
 }
