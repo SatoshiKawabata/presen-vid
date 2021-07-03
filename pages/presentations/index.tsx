@@ -89,7 +89,7 @@ export default function Presentations() {
             if (file && file.name.endsWith(".pvm")) {
               const res = await JSZip.loadAsync(file);
               const fileNames = Object.keys(res.files);
-              let obj: Presentation;
+              let obj: Presentation | undefined = undefined;
               const blobMap = new Map<string, Blob>();
               for (const fileName of fileNames) {
                 const file = res.files[fileName]!;
@@ -101,7 +101,10 @@ export default function Presentations() {
                   blobMap.set(fileName, blob);
                 }
               }
-              obj!.slides.forEach((slide) => {
+              if (!obj) {
+                return;
+              }
+              obj.slides.forEach((slide) => {
                 const blob = blobMap.get(slide.uid)!;
                 const image = new File([blob], slide.uid);
                 slide.image = image;
@@ -110,9 +113,22 @@ export default function Presentations() {
                   audio.blobForPreview = blobMap.get(`${audio.uid}.preview`)!;
                 });
               });
-              console.log(obj!, blobMap);
-              // TODO ファイルのデータをindexedDBに保存
-              // TODO /presentations/[id] に遷移
+              console.log(obj, blobMap);
+              // Save to indexedDB
+              const db = new Dexie("montage");
+              db.version(1).stores({
+                presentations: "++id, title, slides",
+              });
+              const newPresentationData: Omit<Presentation, "id"> = {
+                title: obj.title,
+                slides: obj.slides,
+                width: obj.width,
+                height: obj.height,
+              };
+              const id = await db
+                .table<Omit<Presentation, "id">>("presentations")
+                .add(newPresentationData);
+              router.push(`/presentations/${id}`);
             } else {
               // TODO: エラー表示
             }
