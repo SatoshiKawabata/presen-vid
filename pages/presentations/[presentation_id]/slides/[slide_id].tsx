@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import Head from "next/head";
 import { Header } from "../../../../src/components/Header";
 import Dexie from "dexie";
@@ -11,9 +11,7 @@ import {
   PresentationReducer,
 } from "../../../../src/reducers/PresentationReducer";
 import {
-  Backdrop,
   Button,
-  CircularProgress,
   Drawer,
   List,
   ListItem,
@@ -21,7 +19,6 @@ import {
   ListItemText,
   Modal,
   Tooltip,
-  Typography,
 } from "@material-ui/core";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import {
@@ -37,6 +34,7 @@ import { Settings } from "../../../../src/components/Settings";
 import Link from "next/link";
 import HomeIcon from "@material-ui/icons/Home";
 import JSZip from "jszip";
+import { GlobalContext } from "../../../../src/context/globalContext";
 
 export default function Slide() {
   const router = useRouter();
@@ -44,8 +42,8 @@ export default function Slide() {
     PresentationReducer,
     createInitialState()
   );
-  const { presentation, selectedSlideUid, isShowBackdrop, backdropMessage } =
-    state;
+  const { setBackdropState } = useContext(GlobalContext);
+  const { presentation, selectedSlideUid } = state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
   );
@@ -147,10 +145,7 @@ export default function Slide() {
               onClick={async () => {
                 setIsOpenedMenu(false);
                 if (state.presentation) {
-                  dispatch({
-                    type: PresentationActionType.SHOW_BACKDROP,
-                    message: locale.t.EXPORTING_VIDEO,
-                  });
+                  setBackdropState({ message: locale.t.EXPORTING_VIDEO });
                   const audios: Blob[] = [];
                   const durations: number[] = [];
                   const imageFiles: File[] = [];
@@ -181,7 +176,7 @@ export default function Slide() {
                   } catch (e) {
                     console.error(e);
                   }
-                  dispatch({ type: PresentationActionType.HIDE_BACKDROP });
+                  setBackdropState(null);
                 }
               }}
             >
@@ -209,10 +204,7 @@ export default function Slide() {
             <ListItem
               button
               onClick={async () => {
-                dispatch({
-                  type: PresentationActionType.SHOW_BACKDROP,
-                  message: locale.t.EXPORTING_DATA,
-                });
+                setBackdropState({ message: locale.t.EXPORTING_DATA });
                 const zip = new JSZip();
                 presentation.slides.map((slide) => {
                   zip.file(slide.uid, slide.image);
@@ -230,7 +222,7 @@ export default function Slide() {
                   URL.createObjectURL(blob),
                   `${presentation.title}.pvm`
                 );
-                dispatch({ type: PresentationActionType.HIDE_BACKDROP });
+                setBackdropState(null);
               }}
             >
               <ListItemIcon>
@@ -361,12 +353,6 @@ export default function Slide() {
       >
         <Settings dispatch={dispatch} state={state} />
       </Modal>
-      <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
-        <CircularProgress color="inherit" />
-        <Typography variant="h5" component="h1" color="inherit">
-          {backdropMessage}
-        </Typography>
-      </Backdrop>
     </>
   );
 }

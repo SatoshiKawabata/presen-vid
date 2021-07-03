@@ -1,14 +1,6 @@
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch, useContext, useState } from "react";
 import { Audio, Slide } from "../types";
-import {
-  Backdrop,
-  Button,
-  CircularProgress,
-  MenuItem,
-  Select,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
+import { Button, MenuItem, Select, Tooltip } from "@material-ui/core";
 import {
   PresentationAction,
   PresentationActionType,
@@ -20,6 +12,7 @@ import StopIcon from "@material-ui/icons/Stop";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { MoreButton } from "./MoreButton";
 import { transcodeWebm2Wav } from "../Utils";
+import { GlobalContext } from "../context/globalContext";
 
 interface P {
   slide: Slide;
@@ -34,7 +27,7 @@ enum MoreMenuItems {
 
 export const SlideView = ({ slide, dispatch, state }: P) => {
   const [recorder, setRecorder] = useState<MediaRecorder | undefined>();
-
+  const { setBackdropState } = useContext(GlobalContext);
   const setRecortingState = (recordingState: RecordingState) => {
     dispatch({
       type: PresentationActionType.SET_RECORDING_STATE,
@@ -47,7 +40,6 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
   );
 
   const locale = useLocale();
-  const [isShowBackdrop, setIsShowBackdrop] = useState(false);
 
   return (
     <>
@@ -126,7 +118,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                 setRecortingState(_recorder.state);
               };
               _recorder.ondataavailable = async (e) => {
-                setIsShowBackdrop(true);
+                setBackdropState({ message: locale.t.SAVING_AUDIO });
                 stream.getTracks().forEach((track) => track.stop());
                 duration += Date.now() - prevTime;
                 const blob = e.data;
@@ -146,7 +138,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                   audio,
                   recordingState: _recorder.state,
                 });
-                setIsShowBackdrop(false);
+                setBackdropState(null);
               };
               _recorder.start();
             }}
@@ -244,12 +236,6 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           }}
         />
       </div>
-      <Backdrop open={isShowBackdrop} style={{ zIndex: 9999, color: "#fff" }}>
-        <CircularProgress color="inherit" />
-        <Typography variant="h5" component="h1" color="inherit">
-          {locale.t.SAVING_AUDIO}
-        </Typography>
-      </Backdrop>
     </>
   );
 };

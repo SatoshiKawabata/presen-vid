@@ -6,16 +6,12 @@ export interface PresentationState {
   recordingState: RecordingState;
   selectedSlideUid?: Slide["uid"];
   presentation?: Presentation;
-  isShowBackdrop: boolean;
-  backdropMessage: string;
   audioDeviceId: MediaTrackConstraintSet["deviceId"];
 }
 
 export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
-    isShowBackdrop: false,
-    backdropMessage: "",
     audioDeviceId: "default",
   };
 };
@@ -25,8 +21,6 @@ export enum PresentationActionType {
   SET_RECORDING_STATE,
   ADD_AUDIO,
   SELECT_AUDIO,
-  SHOW_BACKDROP,
-  HIDE_BACKDROP,
   DND_SLIDE,
   ADD_SLIDE,
   SET_AUDIO_DEVICE,
@@ -55,13 +49,6 @@ export type PresentationAction =
       type: PresentationActionType.SELECT_AUDIO;
       selectedSlideUid: Slide["uid"];
       selectedAudioUid: Audio["uid"];
-    }
-  | {
-      type: PresentationActionType.SHOW_BACKDROP;
-      message: string;
-    }
-  | {
-      type: PresentationActionType.HIDE_BACKDROP;
     }
   | {
       type: PresentationActionType.DND_SLIDE;
@@ -157,17 +144,6 @@ export const PresentationReducer = (
         };
       }
       return state;
-    case PresentationActionType.SHOW_BACKDROP:
-      return {
-        ...state,
-        isShowBackdrop: true,
-        backdropMessage: action.message,
-      };
-    case PresentationActionType.HIDE_BACKDROP:
-      return {
-        ...state,
-        isShowBackdrop: false,
-      };
     case PresentationActionType.DND_SLIDE:
       if (state.presentation) {
         const { slides } = state.presentation;
