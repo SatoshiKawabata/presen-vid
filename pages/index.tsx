@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { Header } from "../src/components/Header";
 import { useLocale } from "../src/hooks/useLocale";
 import { Button, Container, CssBaseline, Typography } from "@material-ui/core";
@@ -34,14 +35,16 @@ export default function Home() {
             {locale.t.LP_SUB}
           </Typography>
           <div style={{ marginBottom: 120 }}>
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              {locale.t.LP_MAIN_BUTTON}
-            </Button>
+            <Link href={`/presentations/`}>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                size="large"
+              >
+                {locale.t.LP_MAIN_BUTTON}
+              </Button>
+            </Link>
           </div>
           <div style={{ marginBottom: 120 }}>
             <Typography
@@ -76,6 +79,63 @@ export default function Home() {
                 style={{ marginBottom: 40 }}
               >
                 {locale.t.LP_STEP_3}
+              </Typography>
+            </div>
+          </div>
+          <div style={{ marginBottom: 120 }}>
+            <Typography
+              component="h2"
+              variant="h6"
+              style={{ marginBottom: 40 }}
+            >
+              {locale.t.LP_USECASE_TITLE}
+            </Typography>
+            <div>
+              <Typography
+                component="p"
+                variant="body1"
+                style={{ marginBottom: 40 }}
+              >
+                {locale.t.LP_USECASE_1_BALLOON}
+              </Typography>
+              <Typography
+                component="p"
+                variant="h5"
+                style={{ marginBottom: 40 }}
+              >
+                {locale.t.LP_USECASE_1}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component="p"
+                variant="body1"
+                style={{ marginBottom: 40 }}
+              >
+                {locale.t.LP_USECASE_2_BALLOON}
+              </Typography>
+              <Typography
+                component="p"
+                variant="h5"
+                style={{ marginBottom: 40 }}
+              >
+                {locale.t.LP_USECASE_2}
+              </Typography>
+            </div>
+            <div>
+              <Typography
+                component="p"
+                variant="body1"
+                style={{ marginBottom: 40 }}
+              >
+                {locale.t.LP_USECASE_3_BALLOON}
+              </Typography>
+              <Typography
+                component="p"
+                variant="h5"
+                style={{ marginBottom: 40 }}
+              >
+                {locale.t.LP_USECASE_3}
               </Typography>
             </div>
           </div>
