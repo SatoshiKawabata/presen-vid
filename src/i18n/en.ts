@@ -35,4 +35,23 @@ export const en = {
   INVALID_FILE_TYPE: `Invalid file type so can't load file. Please load ".pvm" file type.`,
   YES: `Yes`,
   NO: `No`,
+  HEAD_TITLE: "Presentation video maker",
+  LP_H1: "Let's make your presentation video more easily",
+  LP_SUB:
+    "スライドを読み込んで録音するだけで簡単にプレゼン動画が作れる「動画作成ツール」",
+  LP_MAIN_BUTTON: "Try it free",
+  LP_STEP_TITLE: "3ステップでプレゼン動画を簡単に作れます！",
+  LP_STEP_1: "ステップ1 スライドを読み込みます",
+  LP_STEP_2: "ステップ2 プレゼンを録音します",
+  LP_STEP_3: "ステップ3 ビデオを書き出します",
+  LP_USECASE_TITLE: "こういうときに使えます！",
+  LP_USECASE_1_BALLOON:
+    "明日までにプレゼンの動画を作らないといけないけど、動画編集とかわからない！",
+  LP_USECASE_1: "難しい動画編集の知識は不要です。",
+  LP_USECASE_2_BALLOON:
+    "動きのあるスライドとか要らないので、手っ取り早くプレゼン動画を作りたい！",
+  LP_USECASE_2:
+    "3ステップで動画を作成できるので、シンプルに素早く動画を作れます。",
+  LP_USECASE_3_BALLOON: "無料で済ませたい！",
+  LP_USECASE_3: "もちろん無料で使えます。",
 };
