@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Header } from "../src/components/Header";
 import { useLocale } from "../src/hooks/useLocale";
 import { Button, Container, CssBaseline, Typography } from "@material-ui/core";
+import SlidesSvg from "../src/assets/slides.svg";
 
 export default function Home() {
   const locale = useLocale();
@@ -62,6 +63,7 @@ export default function Home() {
               >
                 {locale.t.LP_STEP_1}
               </Typography>
+              <SlidesSvg />
             </div>
             <div>
               <Typography
