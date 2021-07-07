@@ -5,6 +5,11 @@ import { Header } from "../src/components/Header";
 import { useLocale } from "../src/hooks/useLocale";
 import { Button, Container, CssBaseline, Typography } from "@material-ui/core";
 import SlidesSvg from "../src/assets/slides.svg";
+import RecordSvg from "../src/assets/record.svg";
+import ExportVideoSvg from "../src/assets/export_video.svg";
+import BalloonCloudSvg from "../src/assets/balloon_cloud.svg";
+import BalloonCircleSvg from "../src/assets/balloon_circle.svg";
+import BalloonGizaSvg from "../src/assets/balloon_giza.svg";
 
 export default function Home() {
   const locale = useLocale();
@@ -73,6 +78,7 @@ export default function Home() {
               >
                 {locale.t.LP_STEP_2}
               </Typography>
+              <RecordSvg />
             </div>
             <div>
               <Typography
@@ -82,6 +88,7 @@ export default function Home() {
               >
                 {locale.t.LP_STEP_3}
               </Typography>
+              <ExportVideoSvg />
             </div>
           </div>
           <div style={{ marginBottom: 120 }}>
@@ -93,6 +100,7 @@ export default function Home() {
               {locale.t.LP_USECASE_TITLE}
             </Typography>
             <div>
+              <BalloonCircleSvg />
               <Typography
                 component="p"
                 variant="body1"
@@ -109,6 +117,7 @@ export default function Home() {
               </Typography>
             </div>
             <div>
+              <BalloonCloudSvg />
               <Typography
                 component="p"
                 variant="body1"
@@ -125,6 +134,7 @@ export default function Home() {
               </Typography>
             </div>
             <div>
+              <BalloonGizaSvg />
               <Typography
                 component="p"
                 variant="body1"
