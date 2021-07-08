@@ -60,17 +60,31 @@ export default function Home() {
             >
               {locale.t.LP_STEP_TITLE}
             </Typography>
-            <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 40
+              }}
+            >
               <Typography
                 component="p"
                 variant="h5"
-                style={{ marginBottom: 40 }}
+                style={{ marginBottom: 40, marginRight: 16 }}
               >
                 {locale.t.LP_STEP_1}
               </Typography>
               <SlidesSvg />
             </div>
-            <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 40
+              }}
+            >
               <Typography
                 component="p"
                 variant="h5"
@@ -80,7 +94,13 @@ export default function Home() {
               </Typography>
               <RecordSvg />
             </div>
-            <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Typography
                 component="p"
                 variant="h5"
