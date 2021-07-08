@@ -40,7 +40,7 @@ export default function Home() {
           >
             {locale.t.LP_SUB}
           </Typography>
-          <div style={{ marginBottom: 120 }}>
+          <div style={{ marginBottom: 200 }}>
             <Link href={`/presentations/`}>
               <Button
                 type="button"
@@ -56,7 +56,7 @@ export default function Home() {
             <Typography
               component="h2"
               variant="h6"
-              style={{ marginBottom: 40 }}
+              style={{ marginBottom: 80 }}
             >
               {locale.t.LP_STEP_TITLE}
             </Typography>
@@ -65,13 +65,13 @@ export default function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 40
+                marginBottom: 160,
               }}
             >
               <Typography
                 component="p"
                 variant="h5"
-                style={{ marginBottom: 40, marginRight: 16 }}
+                style={{ marginBottom: 40, marginRight: 40 }}
               >
                 {locale.t.LP_STEP_1}
               </Typography>
@@ -82,13 +82,13 @@ export default function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 40
+                marginBottom: 160,
               }}
             >
               <Typography
                 component="p"
                 variant="h5"
-                style={{ marginBottom: 40 }}
+                style={{ marginBottom: 40, marginRight: 40 }}
               >
                 {locale.t.LP_STEP_2}
               </Typography>
@@ -104,7 +104,7 @@ export default function Home() {
               <Typography
                 component="p"
                 variant="h5"
-                style={{ marginBottom: 40 }}
+                style={{ marginBottom: 40, marginRight: 40 }}
               >
                 {locale.t.LP_STEP_3}
               </Typography>
