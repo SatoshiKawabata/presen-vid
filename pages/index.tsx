@@ -52,7 +52,7 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          <div style={{ marginBottom: 120 }}>
+          <div style={{ marginBottom: 200 }}>
             <Typography
               component="h2"
               variant="h6"
@@ -111,7 +111,7 @@ export default function Home() {
               <ExportVideoSvg />
             </div>
           </div>
-          <div style={{ marginBottom: 120 }}>
+          <div style={{ marginBottom: 200 }}>
             <Typography
               component="h2"
               variant="h6"
@@ -119,57 +119,112 @@ export default function Home() {
             >
               {locale.t.LP_USECASE_TITLE}
             </Typography>
-            <div>
-              <BalloonCircleSvg />
-              <Typography
-                component="p"
-                variant="body1"
-                style={{ marginBottom: 40 }}
-              >
-                {locale.t.LP_USECASE_1_BALLOON}
-              </Typography>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                marginBottom: 80,
+              }}
+            >
+              <div style={{ position: "relative", marginRight: 40 }}>
+                <BalloonCloudSvg />
+                <Typography
+                  component="p"
+                  variant="body1"
+                  style={{
+                    marginBottom: 40,
+                    position: "absolute",
+                    top: 66,
+                    left: 81,
+                    width: 200,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {locale.t.LP_USECASE_1_BALLOON}
+                </Typography>
+              </div>
               <Typography
                 component="p"
                 variant="h5"
-                style={{ marginBottom: 40 }}
+                style={{
+                  marginBottom: 40,
+                }}
               >
                 {locale.t.LP_USECASE_1}
               </Typography>
             </div>
-            <div>
-              <BalloonCloudSvg />
-              <Typography
-                component="p"
-                variant="body1"
-                style={{ marginBottom: 40 }}
-              >
-                {locale.t.LP_USECASE_2_BALLOON}
-              </Typography>
-              <Typography
-                component="p"
-                variant="h5"
-                style={{ marginBottom: 40 }}
-              >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                marginBottom: 80,
+              }}
+            >
+              <Typography component="p" variant="h5">
                 {locale.t.LP_USECASE_2}
               </Typography>
+              <div style={{ position: "relative", marginLeft: 4 }}>
+                <BalloonCircleSvg style={{ marginBottom: 20 }} />
+                <Typography
+                  component="p"
+                  variant="body1"
+                  style={{
+                    marginBottom: 40,
+                    position: "absolute",
+                    top: 31,
+                    left: 28,
+                    width: 200,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {locale.t.LP_USECASE_2_BALLOON}
+                </Typography>
+              </div>
             </div>
-            <div>
-              <BalloonGizaSvg />
-              <Typography
-                component="p"
-                variant="body1"
-                style={{ marginBottom: 40 }}
-              >
-                {locale.t.LP_USECASE_3_BALLOON}
-              </Typography>
-              <Typography
-                component="p"
-                variant="h5"
-                style={{ marginBottom: 40 }}
-              >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                marginBottom: 80,
+              }}
+            >
+              <div style={{ position: "relative", marginRight: 4 }}>
+                <BalloonGizaSvg />
+                <Typography
+                  component="p"
+                  variant="body1"
+                  style={{
+                    marginBottom: 40,
+                    position: "absolute",
+                    top: 92,
+                    left: 75,
+                    width: 200,
+                    fontSize: 21,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {locale.t.LP_USECASE_3_BALLOON}
+                </Typography>
+              </div>
+              <Typography component="p" variant="h5">
                 {locale.t.LP_USECASE_3}
               </Typography>
             </div>
+          </div>
+          <div style={{ marginBottom: 200 }}>
+            <Link href={`/presentations/`}>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                size="large"
+              >
+                {locale.t.LP_MAIN_BUTTON}
+              </Button>
+            </Link>
           </div>
         </div>
       </Container>
