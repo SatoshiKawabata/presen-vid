@@ -36,6 +36,8 @@ import HomeIcon from "@material-ui/icons/Home";
 import JSZip from "jszip";
 import { GlobalContext } from "../../../../src/context/globalContext";
 
+import * as gtag from "../../../../src/analytics/gatag";
+
 export default function Slide() {
   const router = useRouter();
   const [state, dispatch] = useReducer(
@@ -173,6 +175,11 @@ export default function Slide() {
                     );
                     const url = URL.createObjectURL(videoBlob);
                     download(url, `${locale.t.NEW_VIDEO_NAME}.webm`);
+                    gtag.event({
+                      action: "export-video",
+                      category: "video",
+                      label: "",
+                    });
                   } catch (e) {
                     console.error(e);
                   }

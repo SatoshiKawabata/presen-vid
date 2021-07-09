@@ -7,7 +7,7 @@ import {
   GlobalContext,
   SnackbarState,
 } from "../src/context/globalContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MuiAlert from "@material-ui/lab/Alert";
 import {
   Typography,
@@ -15,6 +15,8 @@ import {
   CircularProgress,
   Snackbar,
 } from "@material-ui/core";
+import * as gtag from "../src/analytics/gatag";
+import { useRouter } from "next/dist/client/router";
 
 export default function App({ Component, pageProps }: AppProps) {
   const theme = createMuiTheme(jaJP);
@@ -22,6 +24,16 @@ export default function App({ Component, pageProps }: AppProps) {
     useState<SnackbarState | null>(null);
   const [backdropState, setBackdropState] =
     useState<BackdropState | null>(null);
+  const router = useRouter();
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      gtag.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
   return (
     <ThemeProvider theme={theme}>
       <GlobalContext.Provider
