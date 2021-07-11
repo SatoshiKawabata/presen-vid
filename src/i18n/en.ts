@@ -35,10 +35,10 @@ export const en = {
   INVALID_FILE_TYPE: `Invalid file type so can't load file. Please load ".pvm" file type.`,
   YES: `Yes`,
   NO: `No`,
-  HEAD_TITLE: "Presentation video maker",
+  HEAD_TITLE:
+    "Presentation video maker - Let's make your presentation video more easily",
   LP_H1: "Let's make your presentation video more easily",
-  LP_SUB:
-    "スライドを読み込んで録音するだけで簡単にプレゼン動画が作れる「動画作成ツール」",
+  LP_SUB: `A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.`,
   LP_MAIN_BUTTON: "Try it free",
   LP_STEP_TITLE: "You can easily make a presentation video in 3 steps!",
   LP_STEP_1: "Step1 Load your slides",
