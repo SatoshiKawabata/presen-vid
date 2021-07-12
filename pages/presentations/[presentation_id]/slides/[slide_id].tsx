@@ -174,7 +174,7 @@ export default function Slide() {
                       size
                     );
                     const url = URL.createObjectURL(videoBlob);
-                    download(url, `${locale.t.NEW_VIDEO_NAME}.webm`);
+                    download(url, `${locale.t.NEW_VIDEO_NAME}.mp4`);
                     gtag.event({
                       action: "export-video",
                       category: "video",
