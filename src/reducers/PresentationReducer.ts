@@ -1,18 +1,29 @@
 import { Audio, Presentation, Slide } from "../types";
 import Dexie from "dexie";
 import { v4 as uuidv4 } from "uuid";
+import {
+  getExportVideoType,
+  setExportVideoType,
+} from "../utils/LocalStorageUtils";
 
 export interface PresentationState {
   recordingState: RecordingState;
   selectedSlideUid?: Slide["uid"];
   presentation?: Presentation;
   audioDeviceId: MediaTrackConstraintSet["deviceId"];
+  exportVideoType: ExportVideoType;
+}
+
+export enum ExportVideoType {
+  MP4 = "mp4",
+  WEBM = "webm",
 }
 
 export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
     audioDeviceId: "default",
+    exportVideoType: getExportVideoType(),
   };
 };
 
@@ -28,6 +39,7 @@ export enum PresentationActionType {
   SET_PRESENTATION_SIZE,
   CHANGE_SLIDE,
   DELETE_SLIDE,
+  SET_EXPORT_VIDEO_TYPE,
 }
 
 export type PresentationAction =
@@ -80,13 +92,16 @@ export type PresentationAction =
   | {
       type: PresentationActionType.DELETE_SLIDE;
       slideUid: Slide["uid"];
+    }
+  | {
+      type: PresentationActionType.SET_EXPORT_VIDEO_TYPE;
+      exportVideoType: ExportVideoType;
     };
 
 export const PresentationReducer = (
   state: PresentationState,
   action: PresentationAction
 ): PresentationState => {
-  console.log("reduce", state, action);
   const { presentation } = state;
   switch (action.type) {
     case PresentationActionType.SET_STATE:
@@ -251,6 +266,12 @@ export const PresentationReducer = (
         };
       }
       return state;
+    case PresentationActionType.SET_EXPORT_VIDEO_TYPE:
+      setExportVideoType(action.exportVideoType);
+      return {
+        ...state,
+        exportVideoType: action.exportVideoType,
+      };
     default: {
       return state;
     }
