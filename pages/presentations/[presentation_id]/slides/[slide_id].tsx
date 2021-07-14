@@ -37,6 +37,7 @@ import JSZip from "jszip";
 import { GlobalContext } from "../../../../src/context/globalContext";
 
 import * as gtag from "../../../../src/analytics/gatag";
+import { getExportVideoType } from "../../../../src/utils/LocalStorageUtils";
 
 export default function Slide() {
   const router = useRouter();
@@ -55,6 +56,11 @@ export default function Slide() {
   const locale = useLocale();
 
   useEffect(() => {
+    dispatch({
+      type: PresentationActionType.SET_EXPORT_VIDEO_TYPE,
+      exportVideoType: getExportVideoType(),
+    });
+
     if (!router.isReady) {
       return;
     }

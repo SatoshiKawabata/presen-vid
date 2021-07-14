@@ -44,13 +44,6 @@ export const Settings = ({ dispatch, state }: P) => {
   const classes = useModalPaperStyles();
   const { t } = useLocale();
 
-  console.log(
-    "audioDeviceId",
-    audioDeviceId,
-    devices,
-    devices.find((device) => device.deviceId === audioDeviceId)?.label
-  );
-
   return (
     <div className={classes.paper}>
       <Typography

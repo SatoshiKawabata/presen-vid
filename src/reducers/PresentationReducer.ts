@@ -1,10 +1,7 @@
 import { Audio, Presentation, Slide } from "../types";
 import Dexie from "dexie";
 import { v4 as uuidv4 } from "uuid";
-import {
-  getExportVideoType,
-  setExportVideoType,
-} from "../utils/LocalStorageUtils";
+import { setExportVideoType } from "../utils/LocalStorageUtils";
 
 export interface PresentationState {
   recordingState: RecordingState;
@@ -23,7 +20,7 @@ export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
     audioDeviceId: "default",
-    exportVideoType: getExportVideoType(),
+    exportVideoType: ExportVideoType.MP4,
   };
 };
 

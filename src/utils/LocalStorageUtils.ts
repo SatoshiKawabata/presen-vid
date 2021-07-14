@@ -5,9 +5,6 @@ enum LocalStorageKey {
 }
 
 export const getExportVideoType = () => {
-  if (!localStorage) {
-    return ExportVideoType.MP4;
-  }
   const val = localStorage.getItem(LocalStorageKey.EXPORT_VIDEO_TYPE);
   if (val === ExportVideoType.MP4 || val === ExportVideoType.WEBM) {
     return val;
@@ -16,5 +13,5 @@ export const getExportVideoType = () => {
 };
 
 export const setExportVideoType = (type: ExportVideoType) => {
-  localStorage && localStorage.setItem(LocalStorageKey.EXPORT_VIDEO_TYPE, type);
+  localStorage.setItem(LocalStorageKey.EXPORT_VIDEO_TYPE, type);
 };
