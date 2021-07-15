@@ -11,6 +11,7 @@ import {
 import React, { Dispatch, useEffect, useState } from "react";
 import { useLocale } from "../hooks/useLocale";
 import {
+  ExportVideoType,
   PresentationAction,
   PresentationActionType,
   PresentationState,
@@ -22,7 +23,7 @@ interface P {
 }
 
 export const Settings = ({ dispatch, state }: P) => {
-  const { audioDeviceId } = state;
+  const { audioDeviceId, exportVideoType } = state;
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   useEffect(() => {
     (async () => {
@@ -94,6 +95,36 @@ export const Settings = ({ dispatch, state }: P) => {
             </MenuItem>
           );
         })}
+      </Select>
+      <InputLabel
+        id="audio-device-select-label"
+        style={{ marginBottom: "8px" }}
+      >
+        {t.EXPORT_VIDEO_TYPE}
+      </InputLabel>
+      <Select
+        labelId="audio-device-select-label"
+        value={exportVideoType}
+        onChange={(e) => {
+          dispatch({
+            type: PresentationActionType.SET_EXPORT_VIDEO_TYPE,
+            exportVideoType: e.target.value as ExportVideoType,
+          });
+        }}
+        style={{ marginBottom: "24px", width: "100%" }}
+      >
+        <MenuItem
+          value={ExportVideoType.MP4}
+          selected={exportVideoType === exportVideoType}
+        >
+          {ExportVideoType.MP4}
+        </MenuItem>
+        <MenuItem
+          value={ExportVideoType.WEBM}
+          selected={exportVideoType === exportVideoType}
+        >
+          {ExportVideoType.WEBM}
+        </MenuItem>
       </Select>
     </div>
   );
