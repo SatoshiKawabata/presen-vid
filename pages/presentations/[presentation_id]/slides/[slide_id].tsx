@@ -177,10 +177,14 @@ export default function Slide() {
                       imageFiles,
                       audios,
                       durations,
-                      size
+                      size,
+                      state.exportVideoType
                     );
                     const url = URL.createObjectURL(videoBlob);
-                    download(url, `${locale.t.NEW_VIDEO_NAME}.mp4`);
+                    download(
+                      url,
+                      `${locale.t.NEW_VIDEO_NAME}.${state.exportVideoType}`
+                    );
                     gtag.event({
                       action: "export-video",
                       category: "video",
