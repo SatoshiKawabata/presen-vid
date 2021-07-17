@@ -99,9 +99,9 @@ export const createVideo = async (
       "-t",
       duration / 1000 + "",
       "-c:a",
-      "copy",
+      getAudioCodec(exportVideoType),
       "-c:v",
-      getCodec(exportVideoType),
+      getVideoCodec(exportVideoType),
       "-s",
       `${width}x${height}`,
       // "-pix_fmt",
@@ -123,9 +123,9 @@ export const createVideo = async (
         "-t",
         "5", // 5秒の無音の動画
         "-c:a",
-        "copy",
+        getAudioCodec(exportVideoType),
         "-c:v",
-        getCodec(exportVideoType),
+        getVideoCodec(exportVideoType),
         "-s",
         `${width}x${height}`,
         tmpVideoName
@@ -144,8 +144,6 @@ export const createVideo = async (
     "fileList.txt",
     "-framerate",
     "30",
-    "-vcodec",
-    getCodec(exportVideoType),
     "-c",
     "copy", // 再エンコードせずにコーデックをそのまま使う
     `result.${exportVideoType}`
@@ -221,10 +219,18 @@ export const transcodeWebm2Wav = async (audio: Blob) => {
   return result;
 };
 
-const getCodec = (exportVideoType: ExportVideoType) => {
+const getVideoCodec = (exportVideoType: ExportVideoType) => {
   if (exportVideoType === ExportVideoType.WEBM) {
     return "libvpx";
   } else {
     return "libx264";
+  }
+};
+
+const getAudioCodec = (exportVideoType: ExportVideoType) => {
+  if (exportVideoType === ExportVideoType.WEBM) {
+    return "copy";
+  } else {
+    return "aac";
   }
 };
