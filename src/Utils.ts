@@ -3,6 +3,7 @@ import { ParsedUrlQuery } from "querystring";
 import getConfig from "next/config";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { v4 as uuidv4 } from "uuid";
+import { ExportVideoType } from "./reducers/PresentationReducer";
 
 export const goto404 = (ctx: GetServerSidePropsContext<ParsedUrlQuery>) => {
   // go to 404
@@ -54,7 +55,8 @@ export const createVideo = async (
   imageFiles: File[],
   audios: Blob[],
   audioDurations: number[],
-  size: { width: number; height: number }
+  size: { width: number; height: number },
+  exportVideoType: ExportVideoType
 ) => {
   let { width, height } = size;
   if (width % 2 === 1) {
@@ -86,7 +88,7 @@ export const createVideo = async (
     const fetchedAudio = await fetchFile(audio);
     ffmpeg.FS("writeFile", audioName, fetchedAudio);
     // 画像だけの動画を作る
-    const tmpVideoName = `tmp_${imageName}.mp4`;
+    const tmpVideoName = `tmp_${imageName}.${exportVideoType}`;
     await ffmpeg.run(
       "-framerate",
       "30",
@@ -97,9 +99,9 @@ export const createVideo = async (
       "-t",
       duration / 1000 + "",
       "-c:a",
-      "copy",
+      getAudioCodec(exportVideoType),
       "-c:v",
-      "libx264",
+      getVideoCodec(exportVideoType),
       "-s",
       `${width}x${height}`,
       // "-pix_fmt",
@@ -110,7 +112,7 @@ export const createVideo = async (
     // 最後に無音を追加する(https://github.com/SatoshiKawabata/montage/issues/33)
     if (i === imageFiles.length - 1) {
       console.log("無音動画");
-      const tmpVideoName = `tmp_${imageName}_last.mp4`;
+      const tmpVideoName = `tmp_${imageName}_last.${exportVideoType}`;
       await ffmpeg.run(
         "-framerate",
         "30",
@@ -121,9 +123,9 @@ export const createVideo = async (
         "-t",
         "5", // 5秒の無音の動画
         "-c:a",
-        "copy",
+        getAudioCodec(exportVideoType),
         "-c:v",
-        "libx264",
+        getVideoCodec(exportVideoType),
         "-s",
         `${width}x${height}`,
         tmpVideoName
@@ -142,24 +144,22 @@ export const createVideo = async (
     "fileList.txt",
     "-framerate",
     "30",
-    "-vcodec",
-    "libx264",
     "-c",
     "copy", // 再エンコードせずにコーデックをそのまま使う
-    "result.mp4"
+    `result.${exportVideoType}`
   );
-  const data = ffmpeg.FS("readFile", "result.mp4");
-  const result = new Blob([data.buffer], { type: "video/mp4" });
+  const data = ffmpeg.FS("readFile", `result.${exportVideoType}`);
+  const result = new Blob([data.buffer], { type: `video/${exportVideoType}` });
 
   // unlink file
   ffmpeg.FS("unlink", "fileList.txt");
-  ffmpeg.FS("unlink", "result.mp4");
+  ffmpeg.FS("unlink", `result.${exportVideoType}`);
   for (const audioName of audioNames) {
     ffmpeg.FS("unlink", audioName);
   }
   for (const imageName of imageNames) {
     ffmpeg.FS("unlink", imageName);
-    const tmpVideoName = `tmp_${imageName}.mp4`;
+    const tmpVideoName = `tmp_${imageName}.${exportVideoType}`;
     ffmpeg.FS("unlink", tmpVideoName);
   }
   return result;
@@ -217,4 +217,20 @@ export const transcodeWebm2Wav = async (audio: Blob) => {
   ffmpeg.FS("unlink", audioInputName);
   ffmpeg.FS("unlink", audioOutputName);
   return result;
+};
+
+const getVideoCodec = (exportVideoType: ExportVideoType) => {
+  if (exportVideoType === ExportVideoType.WEBM) {
+    return "libvpx";
+  } else {
+    return "libx264";
+  }
+};
+
+const getAudioCodec = (exportVideoType: ExportVideoType) => {
+  if (exportVideoType === ExportVideoType.WEBM) {
+    return "copy";
+  } else {
+    return "aac";
+  }
 };

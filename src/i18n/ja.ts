@@ -55,4 +55,5 @@ export const ja = {
     "3ステップで動画を作成できるので、シンプルに素早く動画を作れます。",
   LP_USECASE_3_BALLOON: "無料で済ませたい！",
   LP_USECASE_3: "もちろん無料で使えます。",
+  EXPORT_VIDEO_TYPE: "書き出すビデオの形式",
 };

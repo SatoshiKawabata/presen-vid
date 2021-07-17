@@ -37,6 +37,7 @@ import JSZip from "jszip";
 import { GlobalContext } from "../../../../src/context/globalContext";
 
 import * as gtag from "../../../../src/analytics/gatag";
+import { getExportVideoType } from "../../../../src/utils/LocalStorageUtils";
 
 export default function Slide() {
   const router = useRouter();
@@ -55,6 +56,11 @@ export default function Slide() {
   const locale = useLocale();
 
   useEffect(() => {
+    dispatch({
+      type: PresentationActionType.SET_EXPORT_VIDEO_TYPE,
+      exportVideoType: getExportVideoType(),
+    });
+
     if (!router.isReady) {
       return;
     }
@@ -171,10 +177,14 @@ export default function Slide() {
                       imageFiles,
                       audios,
                       durations,
-                      size
+                      size,
+                      state.exportVideoType
                     );
                     const url = URL.createObjectURL(videoBlob);
-                    download(url, `${locale.t.NEW_VIDEO_NAME}.mp4`);
+                    download(
+                      url,
+                      `${locale.t.NEW_VIDEO_NAME}.${state.exportVideoType}`
+                    );
                     gtag.event({
                       action: "export-video",
                       category: "video",

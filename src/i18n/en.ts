@@ -55,4 +55,5 @@ export const en = {
     "You can create a video in 3 steps, so it's simple and quick to make a video.",
   LP_USECASE_3_BALLOON: "I want it to be free!",
   LP_USECASE_3: "Of course it's free.",
+  EXPORT_VIDEO_TYPE: "Export video type",
 };
