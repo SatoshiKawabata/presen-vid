@@ -127,6 +127,49 @@ export default function Slide() {
     (slide) => slide.audios.length > 0
   );
 
+  const exportVideo = async () => {
+    setIsOpenedMenu(false);
+    if (state.presentation) {
+      setBackdropState({ message: locale.t.EXPORTING_VIDEO });
+      const audios: Blob[] = [];
+      const durations: number[] = [];
+      const imageFiles: File[] = [];
+      const size = {
+        width: state.presentation.width,
+        height: state.presentation.height,
+      };
+      for (const slide of state.presentation.slides) {
+        imageFiles.push(slide.image);
+        for (const audio of slide.audios) {
+          if (audio.uid === slide.selectedAudioUid) {
+            audios.push(audio.blob);
+            durations.push(audio.durationMillisec);
+            break;
+          }
+        }
+      }
+
+      try {
+        const videoBlob = await createVideo(
+          imageFiles,
+          audios,
+          durations,
+          size,
+          state.exportVideoType
+        );
+        const url = URL.createObjectURL(videoBlob);
+        download(url, `${locale.t.NEW_VIDEO_NAME}.${state.exportVideoType}`);
+        gtag.event({
+          action: "export-video",
+          category: "video",
+          label: "",
+        });
+      } catch (e) {
+        console.error(e);
+      }
+      setBackdropState(null);
+    }
+  };
   return (
     <>
       <Head>
@@ -136,7 +179,23 @@ export default function Slide() {
       <Header
         isShowMenu={true}
         onClickMenu={() => setIsOpenedMenu(!isOpenedMenu)}
-      />
+      >
+        <Tooltip
+          title={isReadyToExport ? "" : locale.t.UNREADY_EXPORT}
+          placement="bottom"
+        >
+          <span>
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={!isReadyToExport}
+              onClick={exportVideo}
+            >
+              {locale.t.EXPORT_VIDEO}
+            </Button>
+          </span>
+        </Tooltip>
+      </Header>
       <Drawer
         anchor="left"
         open={isOpenedMenu}
@@ -147,61 +206,18 @@ export default function Slide() {
             title={isReadyToExport ? "" : locale.t.UNREADY_EXPORT}
             placement="right"
           >
-            <ListItem
-              button
-              disabled={!isReadyToExport}
-              onClick={async () => {
-                setIsOpenedMenu(false);
-                if (state.presentation) {
-                  setBackdropState({ message: locale.t.EXPORTING_VIDEO });
-                  const audios: Blob[] = [];
-                  const durations: number[] = [];
-                  const imageFiles: File[] = [];
-                  const size = {
-                    width: state.presentation.width,
-                    height: state.presentation.height,
-                  };
-                  for (const slide of state.presentation.slides) {
-                    imageFiles.push(slide.image);
-                    for (const audio of slide.audios) {
-                      if (audio.uid === slide.selectedAudioUid) {
-                        audios.push(audio.blob);
-                        durations.push(audio.durationMillisec);
-                        break;
-                      }
-                    }
-                  }
-
-                  try {
-                    const videoBlob = await createVideo(
-                      imageFiles,
-                      audios,
-                      durations,
-                      size,
-                      state.exportVideoType
-                    );
-                    const url = URL.createObjectURL(videoBlob);
-                    download(
-                      url,
-                      `${locale.t.NEW_VIDEO_NAME}.${state.exportVideoType}`
-                    );
-                    gtag.event({
-                      action: "export-video",
-                      category: "video",
-                      label: "",
-                    });
-                  } catch (e) {
-                    console.error(e);
-                  }
-                  setBackdropState(null);
-                }
-              }}
-            >
-              <ListItemIcon>
-                <GetAppIcon />
-              </ListItemIcon>
-              <ListItemText primary={locale.t.EXPORT_VIDEO} />
-            </ListItem>
+            <span>
+              <ListItem
+                button
+                disabled={!isReadyToExport}
+                onClick={exportVideo}
+              >
+                <ListItemIcon>
+                  <GetAppIcon />
+                </ListItemIcon>
+                <ListItemText primary={locale.t.EXPORT_VIDEO} />
+              </ListItem>
+            </span>
           </Tooltip>
           <ListItem button onClick={() => setIsOpenedSettingModal(true)}>
             <ListItemIcon>
