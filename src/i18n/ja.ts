@@ -2,10 +2,13 @@ export const ja = {
   CREATE_NEW_PRESENTATION: "新規プレゼンテーションの作成",
   CREATE_NEW_PRESENTATION_DESCRIPTION:
     "プレゼンテーションのスライドの画像(JPEG, PNG等)を選択してください。",
+  LOAD_SLIDE_ERROR: "スライドの読み込みに失敗しました。",
   IMPORT_PRESENTATION_DATA: "プレゼンテーションデータの読み込み",
   IMPORT_PRESENTATION_DATA_DESCRIPTION:
     "プレゼンテーションデータ(.pvm)を読み込んでください。",
   IMPORT: "読み込む",
+  IMPORT_PRESENTATION_DATA_ERROR:
+    "プレゼンテーションデータの読み込みに失敗しました。",
   PRESENTATION_LIST: "プレゼンテーション一覧",
   PRESENTATION: "プレゼンテーション",
   ADD_SLIDE: "スライドを追加する",
