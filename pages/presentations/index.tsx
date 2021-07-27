@@ -77,14 +77,33 @@ export default function Presentations() {
             }
           }}
         />
-        <Typography variant="h5" component="h1" style={{ marginTop: 40 }}>
+
+        {presentations.length > 0 && (
+          <>
+            <Typography variant="h5" component="h2" style={{ marginTop: 32 }}>
+              {locale.t.PRESENTATION_LIST}
+            </Typography>
+            <List>
+              {presentations.map((presentation) => {
+                return (
+                  <ListItem key={presentation.id}>
+                    <Link href={`/presentations/${presentation.id}/slides/0`}>
+                      {presentation.title}
+                    </Link>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </>
+        )}
+        <Typography variant="h6" component="h2" style={{ marginTop: 40 }}>
           {locale.t.IMPORT_PRESENTATION_DATA}
         </Typography>
         <Typography variant="body1" component="p" style={{ marginTop: 8 }}>
           {locale.t.IMPORT_PRESENTATION_DATA_DESCRIPTION}
         </Typography>
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={async () => {
             const files = await importFile();
@@ -144,25 +163,6 @@ export default function Presentations() {
         >
           {locale.t.IMPORT}
         </Button>
-
-        {presentations.length > 0 && (
-          <>
-            <Typography variant="h5" component="h2" style={{ marginTop: 32 }}>
-              {locale.t.PRESENTATION_LIST}
-            </Typography>
-            <List>
-              {presentations.map((presentation) => {
-                return (
-                  <ListItem key={presentation.id}>
-                    <Link href={`/presentations/${presentation.id}/slides/0`}>
-                      {presentation.title}
-                    </Link>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </>
-        )}
       </Container>
     </>
   );
