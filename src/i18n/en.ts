@@ -2,10 +2,12 @@ export const en = {
   CREATE_NEW_PRESENTATION: "Create new presentation",
   CREATE_NEW_PRESENTATION_DESCRIPTION:
     "Select slide images(JPEG, PNG etc) of your presentation.",
+  LOAD_SLIDE_ERROR: "Failed to load slides.",
   IMPORT_PRESENTATION_DATA: "Import presentation data",
   IMPORT_PRESENTATION_DATA_DESCRIPTION: "Select presentation data(.pvm).",
   IMPORT: "Import",
   PRESENTATION_LIST: "Presentation list",
+  IMPORT_PRESENTATION_DATA_ERROR: "Failed to import presentation data.",
   PRESENTATION: "Presentation",
   ADD_SLIDE: "Add slide",
   RECORDED: "Recorded",
