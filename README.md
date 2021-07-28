@@ -4,6 +4,8 @@ A "video creation tool" that makes it easy to create presentation videos by simp
 
 https://presen-vid.com
 
+https://user-images.githubusercontent.com/1194571/127349279-7c0695f4-1678-4f7b-92c6-e27af1e5e5d0.mov
+
 This uses only Web client technology. [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm) makes it possible to encode a video.
 
 ## Getting Started
