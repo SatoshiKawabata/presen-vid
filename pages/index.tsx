@@ -10,6 +10,7 @@ import ExportVideoSvg from "../src/assets/export_video.svg";
 import BalloonCloudSvg from "../src/assets/balloon_cloud.svg";
 import BalloonCircleSvg from "../src/assets/balloon_circle.svg";
 import BalloonGizaSvg from "../src/assets/balloon_giza.svg";
+import { Footer } from "../src/components/Footer";
 
 export default function Home() {
   const locale = useLocale();
@@ -228,6 +229,7 @@ export default function Home() {
           </div>
         </div>
       </Container>
+      <Footer />
     </>
   );
 }
