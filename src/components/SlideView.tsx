@@ -21,6 +21,7 @@ import { MoreButton } from "./MoreButton";
 import { transcodeWebm2Wav } from "../Utils";
 import { GlobalContext } from "../context/globalContext";
 import { useModalPaperStyles } from "./Settings";
+import * as gtag from "../analytics/gatag";
 
 interface P {
   slide: Slide;
@@ -148,6 +149,11 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                   selectedSlideUid: slide.uid,
                   audio,
                   recordingState: _recorder.state,
+                });
+                gtag.event({
+                  action: "record-audio",
+                  category: "audio",
+                  label: "",
                 });
                 setBackdropState(null);
               };
