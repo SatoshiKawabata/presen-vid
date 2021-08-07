@@ -32,13 +32,12 @@ export const en = {
   DELETE_SLIDE_MODAL_TITLE:
     "Do you want to delete slide?(You can't rollback this operation)",
   DELETE_SLIDE: "Delete this slide",
-  APP_TITLE: "Presentation Video Maker",
+  APP_TITLE: "Presen Vid",
   EXPORT_PRESENTATION_DATA: "Export presentation data",
   INVALID_FILE_TYPE: `Invalid file type so can't load file. Please load ".pvm" file type.`,
   YES: `Yes`,
   NO: `No`,
-  HEAD_TITLE:
-    "Presentation video maker - Let's make your presentation video more easily",
+  HEAD_TITLE: "Presen Vid - Let's make your presentation video more easily",
   LP_H1: "Let's make your presentation video more easily",
   LP_SUB: `A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.`,
   LP_MAIN_BUTTON: "Try it free",

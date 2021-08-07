@@ -33,13 +33,12 @@ export const ja = {
   DELETE_SLIDE_MODAL_TITLE:
     "本当にこのスライドを削除しますか？(削除すると復元できません)",
   DELETE_SLIDE: "このスライドを削除する",
-  APP_TITLE: "プレゼン動画作成ツール",
+  APP_TITLE: "Presen Vid",
   EXPORT_PRESENTATION_DATA: "プレゼンテーションデータを書き出す",
   INVALID_FILE_TYPE: `プレゼンテーションデータのファイル形式が正しくないので、読み込みできません。".pvm"形式のファイルを読み込んでください。`,
   YES: `はい`,
   NO: `いいえ`,
-  HEAD_TITLE:
-    "プレゼンテーション動画作成ツール - 時間をかけずにお手軽プレゼン動画作成",
+  HEAD_TITLE: "Presen Vid - 時間をかけずにお手軽プレゼン動画作成",
   LP_H1: "時間をかけずにお手軽プレゼン動画作成",
   LP_SUB:
     "スライドを読み込んで録音するだけで簡単にプレゼン動画が作れる「動画作成ツール」",
