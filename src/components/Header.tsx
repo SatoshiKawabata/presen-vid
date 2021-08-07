@@ -44,7 +44,7 @@ export const Header = (p: P) => {
         )}
         <Link href="/presentations">
           <Typography variant="h6" className={classes.title}>
-            <LogoSvg style={{ fill: "white" }} />
+            <LogoSvg style={{ fill: "white", marginRight: 8 }} />
             {t.APP_TITLE}
           </Typography>
         </Link>
