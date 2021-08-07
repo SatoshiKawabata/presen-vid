@@ -4,6 +4,7 @@ import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "next/link";
 import { useLocale } from "../hooks/useLocale";
+import LogoSvg from "../assets/logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,6 +13,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
+      display: "flex",
+      alignItems: "center",
     },
   })
 );
@@ -41,6 +44,7 @@ export const Header = (p: P) => {
         )}
         <Link href="/presentations">
           <Typography variant="h6" className={classes.title}>
+            <LogoSvg style={{ fill: "white", marginRight: 8 }} />
             {t.APP_TITLE}
           </Typography>
         </Link>
