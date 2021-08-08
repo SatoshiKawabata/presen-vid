@@ -1,15 +1,20 @@
-import { useLocale } from "../hooks/useLocale";
-
 export const Seo = () => {
-  const locale = useLocale();
-
   return (
     <>
       <meta name="viewport" content="width=device-width,initial-scale=1.0" />
       <meta property="og:url" content="https://presen-vid.com" />
-      <meta property="og:title" content={locale.t.HEAD_TITLE} />
-      <meta property="og:site_name" content={locale.t.HEAD_TITLE} />
-      <meta property="og:description" content={locale.t.HEAD_DESCRIPTION} />
+      <meta
+        property="og:title"
+        content="Presen Vid - Let's make your presentation video more easily"
+      />
+      <meta
+        property="og:site_name"
+        content="Presen Vid - Let's make your presentation video more easily"
+      />
+      <meta
+        property="og:description"
+        content={`A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.`}
+      />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="ogp.png" />
       <meta property="og:image:width" content="1200" />
