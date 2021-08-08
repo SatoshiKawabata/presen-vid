@@ -1,4 +1,4 @@
-# Presentation Video Maker
+# Presen Vid
 
 A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.
 
