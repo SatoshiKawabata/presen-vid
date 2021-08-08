@@ -38,6 +38,7 @@ export const en = {
   YES: `Yes`,
   NO: `No`,
   HEAD_TITLE: "Presen Vid - Let's make your presentation video more easily",
+  HEAD_DESCRIPTION: `A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.`,
   LP_H1: "Let's make your presentation video more easily",
   LP_SUB: `A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.`,
   LP_MAIN_BUTTON: "Try it free",
