@@ -16,7 +16,7 @@ export const Seo = () => {
         content={`A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.`}
       />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content="ogp.png" />
+      <meta property="og:image" content="/ogp.png" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <link rel="preconnect" href="https://fonts.gstatic.com" />
