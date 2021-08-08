@@ -6,6 +6,7 @@ import Document, {
   NextScript,
 } from "next/document";
 import { GA_TRACKING_ID } from "../src/analytics/gatag";
+import { Seo } from "../src/components/Seo";
 
 type WithNonceProp = {
   nonce: string;
@@ -64,6 +65,7 @@ export default class MyDocument extends Document<WithNonceProp> {
             color="#000000"
           />
           <link rel="shortcut icon" href="/favicon_package_v0.16/favicon.ico" />{" "}
+          <Seo />
         </Head>
         <body>
           <Main />
