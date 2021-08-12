@@ -12,6 +12,7 @@ import BalloonCircleSvg from "../src/assets/balloon_circle.svg";
 import BalloonGizaSvg from "../src/assets/balloon_giza.svg";
 import { Footer } from "../src/components/Footer";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/dist/client/router";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
@@ -21,6 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 export default function Home() {
   const locale = useLocale();
+  const { locale: localeType } = useRouter();
   return (
     <>
       <Head>
@@ -48,7 +50,7 @@ export default function Home() {
           >
             {locale.t.LP_SUB}
           </Typography>
-          <div style={{ marginBottom: 200 }}>
+          <div style={{ marginBottom: 80 }}>
             <Link href={`/presentations/`}>
               <Button
                 type="button"
@@ -59,6 +61,29 @@ export default function Home() {
                 {locale.t.LP_MAIN_BUTTON}
               </Button>
             </Link>
+          </div>
+          <div style={{ marginBottom: 160 }}>
+            {localeType === "en" ? (
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/4GgOmI-kkT0"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/eE-Rq1a-6Ng"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
           </div>
           <div style={{ marginBottom: 200 }}>
             <Typography
