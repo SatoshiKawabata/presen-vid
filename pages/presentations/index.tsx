@@ -12,6 +12,13 @@ import { useLocale } from "../../src/hooks/useLocale";
 import { importFile } from "../../src/Utils";
 import JSZip from "jszip";
 import { GlobalContext } from "../../src/context/globalContext";
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  ctx.res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  return { props: {} };
+};
 
 export default function Presentations() {
   const router = useRouter();

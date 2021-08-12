@@ -11,6 +11,13 @@ import BalloonCloudSvg from "../src/assets/balloon_cloud.svg";
 import BalloonCircleSvg from "../src/assets/balloon_circle.svg";
 import BalloonGizaSvg from "../src/assets/balloon_giza.svg";
 import { Footer } from "../src/components/Footer";
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  ctx.res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  return { props: {} };
+};
 
 export default function Home() {
   const locale = useLocale();
