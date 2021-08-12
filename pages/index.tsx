@@ -48,7 +48,7 @@ export default function Home() {
           >
             {locale.t.LP_SUB}
           </Typography>
-          <div style={{ marginBottom: 200 }}>
+          <div style={{ marginBottom: 80 }}>
             <Link href={`/presentations/`}>
               <Button
                 type="button"
@@ -59,6 +59,17 @@ export default function Home() {
                 {locale.t.LP_MAIN_BUTTON}
               </Button>
             </Link>
+          </div>
+          <div style={{ marginBottom: 160 }}>
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/eE-Rq1a-6Ng"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           </div>
           <div style={{ marginBottom: 200 }}>
             <Typography
