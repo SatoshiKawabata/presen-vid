@@ -38,6 +38,13 @@ import { GlobalContext } from "../../../../src/context/globalContext";
 
 import * as gtag from "../../../../src/analytics/gatag";
 import { getExportVideoType } from "../../../../src/utils/LocalStorageUtils";
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  ctx.res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  return { props: {} };
+};
 
 export default function Slide() {
   const router = useRouter();
