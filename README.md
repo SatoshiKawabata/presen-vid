@@ -1,6 +1,7 @@
 # Presen Vid
 
-[![Presen Vid thumbnail](https://img.youtube.com/vi/4GgOmI-kkT0/0.jpg)](https://www.youtube.com/watch?v=4GgOmI-kkT0)
+
+https://user-images.githubusercontent.com/1194571/129142785-2a68dbc1-6122-4dbd-a311-91f0821c87c4.mp4
 
 A "video creation tool" that makes it easy to create presentation videos by simply importing slides and recording them.
 
