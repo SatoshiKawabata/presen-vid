@@ -64,25 +64,19 @@ export default function Home() {
           </div>
           <div style={{ marginBottom: 160 }}>
             {localeType === "en" ? (
-              <iframe
-                width="560"
-                height="315"
-                src="https://www.youtube.com/embed/4GgOmI-kkT0"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <video
+                src="en.mp4"
+                title="Presen Vid - Let's make your presentation video more easily"
+                controls
+                width={560}
+              ></video>
             ) : (
-              <iframe
-                width="560"
-                height="315"
-                src="https://www.youtube.com/embed/eE-Rq1a-6Ng"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <video
+                src="ja.mp4"
+                title="Presen Vid - 時間をかけずにお手軽プレゼン動画作成"
+                controls
+                width={560}
+              ></video>
             )}
           </div>
           <div style={{ marginBottom: 200 }}>
