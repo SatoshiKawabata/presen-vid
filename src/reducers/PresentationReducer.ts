@@ -20,7 +20,7 @@ export const createInitialState = (): PresentationState => {
   return {
     recordingState: "inactive",
     audioDeviceId: "default",
-    exportVideoType: ExportVideoType.MP4,
+    exportVideoType: ExportVideoType.WEBM,
   };
 };
 
