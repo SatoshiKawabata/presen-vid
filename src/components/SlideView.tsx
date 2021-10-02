@@ -18,10 +18,11 @@ import { useLocale } from "../hooks/useLocale";
 import StopIcon from "@material-ui/icons/Stop";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { MoreButton } from "./MoreButton";
-import { transcodeWebm2Wav } from "../Utils";
+import { download, transcodeWebm2Wav } from "../Utils";
 import { GlobalContext } from "../context/globalContext";
 import { useModalPaperStyles } from "./Settings";
 import * as gtag from "../analytics/gatag";
+import JSZip from "jszip";
 
 interface P {
   slide: Slide;
@@ -32,6 +33,7 @@ interface P {
 enum MoreMenuItems {
   CHANGE_SLIDE = "change-slide",
   DELETE_SLIDE = "delete-slide",
+  EXPORT_SLIDE = "export-slide",
 }
 
 export const SlideView = ({ slide, dispatch, state }: P) => {
@@ -227,8 +229,9 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               uid: MoreMenuItems.DELETE_SLIDE,
               disabled: state.presentation?.slides.length === 1,
             },
+            { label: locale.t.EXPORT_SLIDE, uid: MoreMenuItems.EXPORT_SLIDE },
           ]}
-          onSelect={(item) => {
+          onSelect={async (item) => {
             if (item.uid === MoreMenuItems.CHANGE_SLIDE) {
               const input = document.createElement("input");
               input.type = "file";
@@ -246,6 +249,21 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               input.click();
             } else if (item.uid === MoreMenuItems.DELETE_SLIDE) {
               setIsOpenedDeleteSlideModal(true);
+            } else if (item.uid === MoreMenuItems.EXPORT_SLIDE) {
+              setBackdropState({ message: locale.t.EXPORTING_SLIDE });
+              const zip = new JSZip();
+              zip.file(slide.uid, slide.image);
+              slide.audios.forEach((audio) => {
+                zip.file(audio.uid, audio.blob);
+                if (audio.blobForPreview) {
+                  zip.file(`${audio.uid}.preview`, audio.blobForPreview);
+                }
+              });
+              const json = JSON.stringify(slide);
+              zip.file("slide.json", json);
+              const blob = await zip.generateAsync({ type: "blob" });
+              download(URL.createObjectURL(blob), `${slide.title}.slide`);
+              setBackdropState(null);
             }
           }}
         />
