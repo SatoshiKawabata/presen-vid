@@ -25,10 +25,12 @@ export const en = {
   AUDIO_DEVICE_SELECT: "Audio device",
   EXPORTING_VIDEO: "Exporting video...",
   EXPORTING_DATA: "Exporting presentation data...",
+  EXPORTING_SLIDE: "Exporting slide data...",
   LOADING_DATA: "Loading presentation data...",
   BACK_TO_TOP: "Back to Top",
   PRESENTATION_TITLE: "Presentation title",
   CHANGE_SLIDE: "Change this slide",
+  EXPORT_SLIDE: "Export this slide",
   DELETE_SLIDE_MODAL_TITLE:
     "Do you want to delete slide?(You can't rollback this operation)",
   DELETE_SLIDE: "Delete this slide",

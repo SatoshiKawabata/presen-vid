@@ -26,10 +26,12 @@ export const ja = {
   AUDIO_DEVICE_SELECT: "録音デバイス",
   EXPORTING_VIDEO: "ビデオの書き出し中...",
   EXPORTING_DATA: "プレゼンテーションデータの書き出し中...",
+  EXPORTING_SLIDE: "スライドデータの書き出し中...",
   LOADING_DATA: "プレゼンテーションデータの読み込み中...",
   BACK_TO_TOP: "トップへ戻る",
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",
+  EXPORT_SLIDE: "このスライドデータを書き出す",
   DELETE_SLIDE_MODAL_TITLE:
     "本当にこのスライドを削除しますか？(削除すると復元できません)",
   DELETE_SLIDE: "このスライドを削除する",
