@@ -31,6 +31,7 @@ export enum PresentationActionType {
   SELECT_AUDIO,
   DND_SLIDE,
   ADD_SLIDE,
+  ADD_SLIDE_DATA,
   SET_AUDIO_DEVICE,
   SET_PRESENTATION_TITLE,
   SET_PRESENTATION_SIZE,
@@ -67,6 +68,10 @@ export type PresentationAction =
   | {
       type: PresentationActionType.ADD_SLIDE;
       file: File;
+    }
+  | {
+      type: PresentationActionType.ADD_SLIDE_DATA;
+      slide: Slide;
     }
   | {
       type: PresentationActionType.SET_AUDIO_DEVICE;
@@ -192,6 +197,20 @@ export const PresentationReducer = (
               audios: [],
             },
           ],
+        };
+        savePresentation(newPresentation);
+        return {
+          ...state,
+          presentation: newPresentation,
+        };
+      }
+      return state;
+    case PresentationActionType.ADD_SLIDE_DATA:
+      const { slide } = action;
+      if (presentation) {
+        const newPresentation = {
+          ...presentation,
+          slides: [...presentation.slides, slide],
         };
         savePresentation(newPresentation);
         return {

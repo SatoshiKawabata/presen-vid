@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import Head from "next/head";
 import { Header } from "../../../../src/components/Header";
 import Dexie from "dexie";
-import { Presentation } from "../../../../src/types";
+import { Presentation, Slide as SlideData } from "../../../../src/types";
 import { useRouter } from "next/dist/client/router";
 import { SlideView } from "../../../../src/components/SlideView";
 import {
@@ -367,10 +367,44 @@ export default function Slide() {
                 margin: "8px",
               }}
               onClick={async () => {
-                const files = await importFile("image/*");
+                const files = await importFile("image/*,.slide");
                 if (files && files.length > 0) {
                   const file = files[0]!;
-                  dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                  if (file.name.endsWith(".slide")) {
+                    const res = await JSZip.loadAsync(file);
+                    const fileNames = Object.keys(res.files);
+                    let obj: SlideData | undefined = undefined;
+                    const blobMap = new Map<string, Blob>();
+                    for (const fileName of fileNames) {
+                      const file = res.files[fileName]!;
+                      if (file.name.endsWith(".json")) {
+                        const str = await file.async("string");
+                        obj = JSON.parse(str);
+                      } else {
+                        const blob = await file.async("blob");
+                        blobMap.set(fileName, blob);
+                      }
+                    }
+                    if (!obj) {
+                      setBackdropState(null);
+                      return;
+                    }
+                    const blob = blobMap.get(obj.uid)!;
+                    const image = new File([blob], obj.uid);
+                    obj.image = image;
+                    obj.audios.forEach((audio) => {
+                      audio.blob = blobMap.get(audio.uid)!;
+                      audio.blobForPreview = blobMap.get(
+                        `${audio.uid}.preview`
+                      )!;
+                    });
+                    dispatch({
+                      type: PresentationActionType.ADD_SLIDE_DATA,
+                      slide: obj,
+                    });
+                  } else {
+                    dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                  }
                 }
               }}
             >
