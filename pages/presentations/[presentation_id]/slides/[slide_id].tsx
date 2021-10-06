@@ -49,21 +49,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default function Slide() {
-  const router = useRouter();
-  const [state, dispatch] = useReducer(
-    PresentationReducer,
-    createInitialState()
-  );
-  const { setBackdropState } = useContext(GlobalContext);
-  const { presentation, selectedSlideUid } = state;
-  const selectedSlide = presentation?.slides.find(
-    (slide) => slide.uid === selectedSlideUid
-  );
-
-  const [isOpenedMenu, setIsOpenedMenu] = useState(false);
-  const [isOpenedSettingModal, setIsOpenedSettingModal] = useState(false);
-  const locale = useLocale();
-
   if (window) {
     (window as any)["Dexie"] = Dexie;
     (window as any)["DbgUtl"] = {
@@ -81,6 +66,21 @@ export default function Slide() {
       },
     };
   }
+
+  const router = useRouter();
+  const [state, dispatch] = useReducer(
+    PresentationReducer,
+    createInitialState()
+  );
+  const { setBackdropState } = useContext(GlobalContext);
+  const { presentation, selectedSlideUid } = state;
+  const selectedSlide = presentation?.slides.find(
+    (slide) => slide.uid === selectedSlideUid
+  );
+
+  const [isOpenedMenu, setIsOpenedMenu] = useState(false);
+  const [isOpenedSettingModal, setIsOpenedSettingModal] = useState(false);
+  const locale = useLocale();
 
   useEffect(() => {
     dispatch({
