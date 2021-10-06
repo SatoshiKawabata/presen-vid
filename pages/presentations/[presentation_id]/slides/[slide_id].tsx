@@ -46,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return { props: {} };
 };
 
-window["Dexie"] = Dexie;
+(window as any)["Dexie"] = Dexie;
 
 export default function Slide() {
   const router = useRouter();
