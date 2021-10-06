@@ -266,6 +266,8 @@ export const downloadPresentation = async (presentation: Presentation) => {
   });
   const json = JSON.stringify(presentation);
   zip.file("presentation.json", json);
-  const blob = await zip.generateAsync({ type: "blob" });
+  const blob = await zip.generateAsync({ type: "blob" }, (metadata) =>
+    console.log("onUpdate", metadata)
+  );
   download(URL.createObjectURL(blob), `${presentation.title}.pvm`);
 };
