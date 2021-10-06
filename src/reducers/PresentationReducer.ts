@@ -53,7 +53,7 @@ export type PresentationAction =
       type: PresentationActionType.ADD_AUDIO;
       audio: Audio;
       selectedSlideUid: Slide["uid"];
-      recordingState: RecordingState;
+      recordingState?: RecordingState;
     }
   | {
       type: PresentationActionType.SELECT_AUDIO;
@@ -135,7 +135,9 @@ export const PresentationReducer = (
         return {
           ...state,
           presentation,
-          recordingState: action.recordingState,
+          recordingState: action.recordingState
+            ? action.recordingState
+            : state.recordingState,
         };
       }
       return state;

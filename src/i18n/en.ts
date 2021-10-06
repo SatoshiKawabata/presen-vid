@@ -18,6 +18,7 @@ export const en = {
     "Unready to export video because some slides have not recorded.",
   RECORDING: "Stop Recording",
   SAVING_AUDIO: "Saving audio",
+  UPLOADING_AUDIO: "Uploading audio",
   RECORD: "Record",
   RECORD_PRESENTATION: "Rcord your presentation",
   OPEN_SETTINGS: "Settings",
@@ -31,6 +32,8 @@ export const en = {
   PRESENTATION_TITLE: "Presentation title",
   CHANGE_SLIDE: "Change this slide",
   EXPORT_SLIDE: "Export this slide",
+  UPLOAD_AUDIO: "Upload audio file",
+  ERROR_UPLOAD_AUDIO: "Failed to upload audio file",
   DELETE_SLIDE_MODAL_TITLE:
     "Do you want to delete slide?(You can't rollback this operation)",
   DELETE_SLIDE: "Delete this slide",

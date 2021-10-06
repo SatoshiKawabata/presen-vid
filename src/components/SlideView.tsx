@@ -1,5 +1,5 @@
 import React, { Dispatch, useContext, useState } from "react";
-import { Audio, Slide } from "../types";
+import { Slide } from "../types";
 import {
   Button,
   MenuItem,
@@ -13,12 +13,11 @@ import {
   PresentationActionType,
   PresentationState,
 } from "../reducers/PresentationReducer";
-import { v4 as uuidv4 } from "uuid";
 import { useLocale } from "../hooks/useLocale";
 import StopIcon from "@material-ui/icons/Stop";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { MoreButton } from "./MoreButton";
-import { download, transcodeWebm2Wav } from "../Utils";
+import { blob2audioData, download, importFile } from "../Utils";
 import { GlobalContext } from "../context/globalContext";
 import { useModalPaperStyles } from "./Settings";
 import * as gtag from "../analytics/gatag";
@@ -34,11 +33,12 @@ enum MoreMenuItems {
   CHANGE_SLIDE = "change-slide",
   DELETE_SLIDE = "delete-slide",
   EXPORT_SLIDE = "export-slide",
+  UPLOAD_AUDIO = "upload-audio",
 }
 
 export const SlideView = ({ slide, dispatch, state }: P) => {
   const [recorder, setRecorder] = useState<MediaRecorder | undefined>();
-  const { setBackdropState } = useContext(GlobalContext);
+  const { setBackdropState, setSnackbarState } = useContext(GlobalContext);
   const setRecortingState = (recordingState: RecordingState) => {
     dispatch({
       type: PresentationActionType.SET_RECORDING_STATE,
@@ -136,16 +136,11 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                 stream.getTracks().forEach((track) => track.stop());
                 duration += Date.now() - prevTime;
                 const blob = e.data;
-                const blobForPreview = await transcodeWebm2Wav(blob);
-                const audio: Audio = {
-                  title: `${locale.t.NEW_AUDIO_NAME} ${
-                    slide.audios.length + 1
-                  }`,
+                const audio = await blob2audioData(
                   blob,
-                  blobForPreview,
-                  durationMillisec: duration,
-                  uid: uuidv4(),
-                };
+                  duration,
+                  `${locale.t.NEW_AUDIO_NAME} ${slide.audios.length + 1}`
+                );
                 dispatch({
                   type: PresentationActionType.ADD_AUDIO,
                   selectedSlideUid: slide.uid,
@@ -230,6 +225,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               disabled: state.presentation?.slides.length === 1,
             },
             { label: locale.t.EXPORT_SLIDE, uid: MoreMenuItems.EXPORT_SLIDE },
+            { label: locale.t.UPLOAD_AUDIO, uid: MoreMenuItems.UPLOAD_AUDIO },
           ]}
           onSelect={async (item) => {
             if (item.uid === MoreMenuItems.CHANGE_SLIDE) {
@@ -264,6 +260,34 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               const blob = await zip.generateAsync({ type: "blob" });
               download(URL.createObjectURL(blob), `${slide.title}.slide`);
               setBackdropState(null);
+            } else if (item.uid === MoreMenuItems.UPLOAD_AUDIO) {
+              const files = await importFile("audio/*");
+              const blob = files.item(0);
+              if (!blob) {
+                setSnackbarState({
+                  message: locale.t.ERROR_UPLOAD_AUDIO,
+                  type: "error",
+                });
+                return;
+              }
+              setBackdropState({ message: locale.t.UPLOADING_AUDIO });
+              const audioTag = document.createElement("audio");
+              audioTag.addEventListener("loadeddata", async () => {
+                console.log(audioTag, audioTag.duration);
+                const { duration } = audioTag;
+                const audio = await blob2audioData(
+                  blob,
+                  duration * 1000,
+                  `${locale.t.NEW_AUDIO_NAME} ${slide.audios.length + 1}`
+                );
+                dispatch({
+                  type: PresentationActionType.ADD_AUDIO,
+                  selectedSlideUid: slide.uid,
+                  audio,
+                });
+                setBackdropState(null);
+              });
+              audioTag.src = URL.createObjectURL(blob);
             }
           }}
         />
