@@ -4,6 +4,7 @@ import getConfig from "next/config";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { v4 as uuidv4 } from "uuid";
 import { ExportVideoType } from "./reducers/PresentationReducer";
+import { Audio } from "./types";
 
 export const goto404 = (ctx: GetServerSidePropsContext<ParsedUrlQuery>) => {
   // go to 404
@@ -217,6 +218,22 @@ export const transcodeWebm2Wav = async (audio: Blob) => {
   ffmpeg.FS("unlink", audioInputName);
   ffmpeg.FS("unlink", audioOutputName);
   return result;
+};
+
+export const blob2audioData = async (
+  blob: Blob,
+  durationMillisec: number,
+  title: string
+) => {
+  const blobForPreview = await transcodeWebm2Wav(blob);
+  const audio: Audio = {
+    title,
+    blob,
+    blobForPreview,
+    durationMillisec,
+    uid: uuidv4(),
+  };
+  return audio;
 };
 
 const getVideoCodec = (exportVideoType: ExportVideoType) => {

@@ -20,6 +20,7 @@ export const ja = {
   RECORDING: "録音を止める",
   RECORD: "録音する",
   SAVING_AUDIO: "音声を保存しています",
+  UPLOADING_AUDIO: "音声ファイルを読み込んでいます",
   RECORD_PRESENTATION: "プレゼンテーションを録音する",
   OPEN_SETTINGS: "設定を開く",
   SETTINGS_TITLE: "設定",
@@ -32,6 +33,8 @@ export const ja = {
   PRESENTATION_TITLE: "プレゼンテーションのタイトル",
   CHANGE_SLIDE: "このスライドを変更する",
   EXPORT_SLIDE: "このスライドデータを書き出す",
+  UPLOAD_AUDIO: "音声ファイルを読み込む",
+  ERROR_UPLOAD_AUDIO: "音声ファイルの読み込みに失敗しました",
   DELETE_SLIDE_MODAL_TITLE:
     "本当にこのスライドを削除しますか？(削除すると復元できません)",
   DELETE_SLIDE: "このスライドを削除する",

@@ -149,7 +149,9 @@ export default function Slide() {
         imageFiles.push(slide.image);
         for (const audio of slide.audios) {
           if (audio.uid === slide.selectedAudioUid) {
-            audios.push(audio.blob);
+            audios.push(
+              audio.blobForPreview ? audio.blobForPreview : audio.blob
+            );
             durations.push(audio.durationMillisec);
             break;
           }
