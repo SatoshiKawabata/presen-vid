@@ -296,7 +296,7 @@ export const PresentationReducer = (
   }
 };
 
-const savePresentation = async (presentation: Presentation) => {
+export const savePresentation = async (presentation: Presentation) => {
   const db = new Dexie("montage");
   db.version(1).stores({
     presentations: "++id, title, slides",
