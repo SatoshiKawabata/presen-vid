@@ -64,21 +64,23 @@ export default function Slide() {
   const [isOpenedSettingModal, setIsOpenedSettingModal] = useState(false);
   const locale = useLocale();
 
-  (window as any)["Dexie"] = Dexie;
-  (window as any)["DbgUtl"] = {
-    getPresentation: () => {
-      return presentation;
-    },
-    downloadPresentation: (p: Presentation) => {
-      downloadPresentation(p);
-    },
-    savePresentationToIndexeddb: (p: Presentation) => {
-      if (!p) {
-        return;
-      }
-      savePresentation(p);
-    },
-  };
+  if (window) {
+    (window as any)["Dexie"] = Dexie;
+    (window as any)["DbgUtl"] = {
+      getPresentation: () => {
+        return presentation;
+      },
+      downloadPresentation: (p: Presentation) => {
+        downloadPresentation(p);
+      },
+      savePresentationToIndexeddb: (p: Presentation) => {
+        if (!p) {
+          return;
+        }
+        savePresentation(p);
+      },
+    };
+  }
 
   useEffect(() => {
     dispatch({
