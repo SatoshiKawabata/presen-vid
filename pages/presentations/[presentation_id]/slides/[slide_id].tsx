@@ -56,23 +56,6 @@ export default function Slide() {
   );
   const { setBackdropState } = useContext(GlobalContext);
   const { presentation, selectedSlideUid } = state;
-  if (window) {
-    (window as any)["Dexie"] = Dexie;
-    (window as any)["DbgUtl"] = {
-      getPresentation: () => {
-        return presentation;
-      },
-      downloadPresentation: (p: Presentation) => {
-        downloadPresentation(p);
-      },
-      savePresentationToIndexeddb: (p: Presentation) => {
-        if (!p) {
-          return;
-        }
-        savePresentation(p);
-      },
-    };
-  }
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
   );
@@ -108,6 +91,23 @@ export default function Slide() {
         if (!presentation) {
           router.replace("/404");
           return Promise.resolve();
+        }
+        if (window) {
+          (window as any)["Dexie"] = Dexie;
+          (window as any)["DbgUtl"] = {
+            getPresentation: () => {
+              return presentation;
+            },
+            downloadPresentation: (p: Presentation) => {
+              downloadPresentation(p);
+            },
+            savePresentationToIndexeddb: (p: Presentation) => {
+              if (!p) {
+                return;
+              }
+              savePresentation(p);
+            },
+          };
         }
         const slide = presentation.slides.find(
           (slide) => slide.uid === slide_id
