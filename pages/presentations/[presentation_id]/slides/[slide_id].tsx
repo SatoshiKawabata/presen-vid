@@ -9,6 +9,7 @@ import {
   createInitialState,
   PresentationActionType,
   PresentationReducer,
+  savePresentation,
 } from "../../../../src/reducers/PresentationReducer";
 import {
   Button,
@@ -24,6 +25,7 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import {
   createVideo,
   download,
+  downloadPresentation,
   getImageSize,
   importFile,
 } from "../../../../src/Utils";
@@ -46,8 +48,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return { props: {} };
 };
 
-(window as any)["Dexie"] = Dexie;
-
 export default function Slide() {
   const router = useRouter();
   const [state, dispatch] = useReducer(
@@ -63,6 +63,22 @@ export default function Slide() {
   const [isOpenedMenu, setIsOpenedMenu] = useState(false);
   const [isOpenedSettingModal, setIsOpenedSettingModal] = useState(false);
   const locale = useLocale();
+
+  (window as any)["Dexie"] = Dexie;
+  (window as any)["DbgUtl"] = {
+    getPresentation: () => {
+      return presentation;
+    },
+    downloadPresentation: (p: Presentation) => {
+      downloadPresentation(p);
+    },
+    savePresentationToIndexeddb: (p: Presentation) => {
+      if (!p) {
+        return;
+      }
+      savePresentation(p);
+    },
+  };
 
   useEffect(() => {
     dispatch({
@@ -249,23 +265,7 @@ export default function Slide() {
               button
               onClick={async () => {
                 setBackdropState({ message: locale.t.EXPORTING_DATA });
-                const zip = new JSZip();
-                presentation.slides.map((slide) => {
-                  zip.file(slide.uid, slide.image);
-                  slide.audios.forEach((audio) => {
-                    zip.file(audio.uid, audio.blob);
-                    if (audio.blobForPreview) {
-                      zip.file(`${audio.uid}.preview`, audio.blobForPreview);
-                    }
-                  });
-                });
-                const json = JSON.stringify(presentation);
-                zip.file("presentation.json", json);
-                const blob = await zip.generateAsync({ type: "blob" });
-                download(
-                  URL.createObjectURL(blob),
-                  `${presentation.title}.pvm`
-                );
+                downloadPresentation(presentation);
                 setBackdropState(null);
               }}
             >

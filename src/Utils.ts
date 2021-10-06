@@ -4,7 +4,8 @@ import getConfig from "next/config";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { v4 as uuidv4 } from "uuid";
 import { ExportVideoType } from "./reducers/PresentationReducer";
-import { Audio } from "./types";
+import { Audio, Presentation } from "./types";
+import JSZip from "jszip";
 
 export const goto404 = (ctx: GetServerSidePropsContext<ParsedUrlQuery>) => {
   // go to 404
@@ -250,4 +251,21 @@ const getAudioCodec = (exportVideoType: ExportVideoType) => {
   } else {
     return "aac";
   }
+};
+
+export const downloadPresentation = async (presentation: Presentation) => {
+  const zip = new JSZip();
+  presentation.slides.map((slide) => {
+    zip.file(slide.uid, slide.image);
+    slide.audios.forEach((audio) => {
+      zip.file(audio.uid, audio.blob);
+      if (audio.blobForPreview) {
+        zip.file(`${audio.uid}.preview`, audio.blobForPreview);
+      }
+    });
+  });
+  const json = JSON.stringify(presentation);
+  zip.file("presentation.json", json);
+  const blob = await zip.generateAsync({ type: "blob" });
+  download(URL.createObjectURL(blob), `${presentation.title}.pvm`);
 };
