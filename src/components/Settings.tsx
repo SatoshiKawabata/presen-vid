@@ -9,8 +9,7 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
-import React, { Dispatch, useContext, useEffect, useState } from "react";
-import { GlobalContext } from "../context/globalContext";
+import React, { Dispatch, useEffect, useState } from "react";
 import { useLocale } from "../hooks/useLocale";
 import {
   ExportVideoType,
