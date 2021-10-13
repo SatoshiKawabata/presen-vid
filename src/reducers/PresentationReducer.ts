@@ -38,6 +38,7 @@ export enum PresentationActionType {
   CHANGE_SLIDE,
   DELETE_SLIDE,
   SET_EXPORT_VIDEO_TYPE,
+  DELETE_UNUSED_AUDIO_TRACKS,
 }
 
 export type PresentationAction =
@@ -98,6 +99,9 @@ export type PresentationAction =
   | {
       type: PresentationActionType.SET_EXPORT_VIDEO_TYPE;
       exportVideoType: ExportVideoType;
+    }
+  | {
+      type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS;
     };
 
 export const PresentationReducer = (
@@ -290,6 +294,27 @@ export const PresentationReducer = (
         ...state,
         exportVideoType: action.exportVideoType,
       };
+    case PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS:
+      if (presentation) {
+        const newSlides = presentation.slides.map((slide) => {
+          const selectedAudio = slide.audios.find(
+            (audio) => audio.uid === slide.selectedAudioUid
+          );
+          if (selectedAudio) {
+            return {
+              ...slide,
+              audios: [selectedAudio],
+            };
+          }
+          return slide;
+        });
+        return {
+          ...state,
+          presentation: updatePresentation(presentation, { slides: newSlides }),
+        };
+      } else {
+        return state;
+      }
     default: {
       return state;
     }

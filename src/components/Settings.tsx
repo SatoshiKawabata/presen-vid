@@ -1,4 +1,5 @@
 import {
+  Button,
   createStyles,
   InputLabel,
   makeStyles,
@@ -41,6 +42,14 @@ export const Settings = ({ dispatch, state }: P) => {
       }
     })();
   }, []);
+
+  const deleteUnusedAudioData = async () => {
+    dispatch({ type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS });
+  };
+
+  const hasUnusedAudioTracks = state.presentation?.slides.some(
+    (slide) => slide.audios.length > 1
+  );
 
   const classes = useModalPaperStyles();
   const { t } = useLocale();
@@ -126,6 +135,21 @@ export const Settings = ({ dispatch, state }: P) => {
           {ExportVideoType.WEBM}
         </MenuItem>
       </Select>
+      <InputLabel
+        id="audio-device-select-label"
+        style={{ marginBottom: "8px" }}
+      >
+        {t.DISK_SPACE}
+      </InputLabel>
+      <Button
+        disabled={!hasUnusedAudioTracks}
+        size="small"
+        color="secondary"
+        variant="contained"
+        onClick={deleteUnusedAudioData}
+      >
+        {t.DELETE_AUDIO_TRACKS}
+      </Button>
     </div>
   );
 };
@@ -134,7 +158,7 @@ export const useModalPaperStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: "absolute",
-      width: 400,
+      width: 500,
       backgroundColor: theme.palette.background.paper,
       border: "2px solid #000",
       boxShadow: theme.shadows[5],
