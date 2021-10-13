@@ -100,6 +100,8 @@ export const createVideo = async (
       audioName,
       "-t",
       duration / 1000 + "",
+      "-ar",
+      "48000",
       "-c:a",
       getAudioCodec(exportVideoType),
       "-c:v",
@@ -213,7 +215,8 @@ export const transcodeWebm2Wav = async (audio: Blob) => {
   const audioOutputName = `${uuidv4()}.wav`;
   const fetchedAudio = await fetchFile(audio);
   ffmpeg.FS("writeFile", audioInputName, fetchedAudio);
-  await ffmpeg.run("-i", audioInputName, "-ac", "2", audioOutputName);
+  // サンプルレート48kHzでwavファイルに変換
+  await ffmpeg.run("-i", audioInputName, "-ac", "2", "-ar", "48000", audioOutputName);
   const data = ffmpeg.FS("readFile", audioOutputName);
   const result = new Blob([data.buffer], { type: "audio/wav" });
   ffmpeg.FS("unlink", audioInputName);
