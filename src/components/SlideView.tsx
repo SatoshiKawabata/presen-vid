@@ -320,6 +320,10 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                 type: PresentationActionType.DELETE_SLIDE,
                 slideUid: slide.uid,
               });
+              setSnackbarState({
+                type: "success",
+                message: locale.t.DELETED_SLIDE,
+              });
               setIsOpenedDeleteSlideModal(false);
             }}
             color="primary"

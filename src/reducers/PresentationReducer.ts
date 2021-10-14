@@ -1,7 +1,7 @@
 import { Audio, Presentation, Slide } from "../types";
-import Dexie from "dexie";
 import { v4 as uuidv4 } from "uuid";
 import { setExportVideoType } from "../utils/LocalStorageUtils";
+import { savePresentation } from "../Utils";
 
 export interface PresentationState {
   recordingState: RecordingState;
@@ -319,17 +319,6 @@ export const PresentationReducer = (
       return state;
     }
   }
-};
-
-export const savePresentation = async (presentation: Presentation) => {
-  const db = new Dexie("montage");
-  db.version(1).stores({
-    presentations: "++id, title, slides",
-  });
-
-  await db
-    .table<Omit<Presentation, "id">>("presentations")
-    .update(presentation.id, presentation);
 };
 
 const updateSlide = (

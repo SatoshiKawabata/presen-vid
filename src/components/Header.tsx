@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "next/link";

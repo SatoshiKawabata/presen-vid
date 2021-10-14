@@ -27,6 +27,7 @@ export const ja = {
   AUDIO_DEVICE_SELECT: "録音デバイス",
   DISK_SPACE: "ディスクの空き容量を増やす",
   DELETE_AUDIO_TRACKS: "スライド上で選択されていない音声データを削除する",
+  DELETE_PRESENTATION: "プレゼンテーションを削除する",
   DELETING_AUDIO_TRACKS: "音声データを削除中...",
   EXPORTING_VIDEO: "ビデオの書き出し中...",
   EXPORTING_DATA: "プレゼンテーションデータの書き出し中...",
@@ -40,6 +41,10 @@ export const ja = {
   ERROR_UPLOAD_AUDIO: "音声ファイルの読み込みに失敗しました",
   DELETE_SLIDE_MODAL_TITLE:
     "本当にこのスライドを削除しますか？(削除すると復元できません)",
+  DELETED_SLIDE: "スライドを削除しました",
+  DELETE_PRESENTATION_MODAL_TITLE:
+    "本当にこのプレゼンテーションを削除しますか？(削除すると復元できません)",
+  DELETED_PRESENTATION: "プレゼンテーションを削除しました",
   DELETE_SLIDE: "このスライドを削除する",
   APP_TITLE: "Presen Vid",
   EXPORT_PRESENTATION_DATA: "プレゼンテーションデータを書き出す",
