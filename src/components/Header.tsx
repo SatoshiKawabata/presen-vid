@@ -6,19 +6,6 @@ import Link from "next/link";
 import { useLocale } from "../hooks/useLocale";
 import LogoSvg from "../assets/logo.svg";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      flexGrow: 1,
-      display: "flex",
-      alignItems: "center",
-    },
-  })
-);
-
 interface P {
   isShowMenu?: boolean;
   onClickMenu?: () => void;
@@ -26,7 +13,6 @@ interface P {
 }
 
 export const Header = (p: P) => {
-  const classes = useStyles();
   const { t } = useLocale();
   return (
     <AppBar position="static">
@@ -34,7 +20,7 @@ export const Header = (p: P) => {
         {p.isShowMenu && (
           <IconButton
             edge="start"
-            className={classes.menuButton}
+            style={{ marginRight: 16 }}
             color="inherit"
             aria-label="menu"
             onClick={p.onClickMenu}
@@ -43,7 +29,10 @@ export const Header = (p: P) => {
           </IconButton>
         )}
         <Link href="/presentations">
-          <Typography variant="h6" className={classes.title}>
+          <Typography
+            variant="h6"
+            style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+          >
             <LogoSvg style={{ fill: "white", marginRight: 8 }} />
             {t.APP_TITLE}
           </Typography>
