@@ -41,6 +41,7 @@ export const ja = {
   ERROR_UPLOAD_AUDIO: "音声ファイルの読み込みに失敗しました",
   DELETE_SLIDE_MODAL_TITLE:
     "本当にこのスライドを削除しますか？(削除すると復元できません)",
+  DELETED_SLIDE: "スライドを削除しました",
   DELETE_PRESENTATION_MODAL_TITLE:
     "本当にこのプレゼンテーションを削除しますか？(削除すると復元できません)",
   DELETED_PRESENTATION: "プレゼンテーションを削除しました",

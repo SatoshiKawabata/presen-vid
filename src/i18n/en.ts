@@ -42,6 +42,7 @@ export const en = {
     "Do you want to delete slide?(You can't rollback this operation)",
   DELETE_PRESENTATION_MODAL_TITLE:
     "Do you want to delete presentation?(You can't rollback this operation)",
+  DELETED_SLIDE: "Deleted slide",
   DELETED_PRESENTATION: "Deleted presentation",
   DELETE_SLIDE: "Delete this slide",
   APP_TITLE: "Presen Vid",
