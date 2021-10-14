@@ -9,7 +9,6 @@ import {
   createInitialState,
   PresentationActionType,
   PresentationReducer,
-  savePresentation,
 } from "../../../../src/reducers/PresentationReducer";
 import {
   Button,
@@ -28,6 +27,7 @@ import {
   downloadPresentation,
   getImageSize,
   importFile,
+  savePresentation,
 } from "../../../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../../../src/hooks/useLocale";
