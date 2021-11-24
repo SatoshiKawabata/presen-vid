@@ -1,7 +1,9 @@
-import { Audio, Presentation, Slide } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { setExportVideoType } from "../utils/LocalStorageUtils";
 import { savePresentation } from "../Utils";
+import { Slide } from "../domain/Slide";
+import { Presentation } from "../domain/Presentation";
+import { Audio } from "../domain/Audio";
 
 export interface PresentationState {
   recordingState: RecordingState;
@@ -43,66 +45,66 @@ export enum PresentationActionType {
 
 export type PresentationAction =
   | {
-      type: PresentationActionType.SET_STATE;
-      state: Partial<PresentationState>;
-    }
+    type: PresentationActionType.SET_STATE;
+    state: Partial<PresentationState>;
+  }
   | {
-      type: PresentationActionType.SET_RECORDING_STATE;
-      recordingState: RecordingState;
-    }
+    type: PresentationActionType.SET_RECORDING_STATE;
+    recordingState: RecordingState;
+  }
   | {
-      type: PresentationActionType.ADD_AUDIO;
-      audio: Audio;
-      selectedSlideUid: Slide["uid"];
-      recordingState?: RecordingState;
-    }
+    type: PresentationActionType.ADD_AUDIO;
+    audio: Audio;
+    selectedSlideUid: Slide["uid"];
+    recordingState?: RecordingState;
+  }
   | {
-      type: PresentationActionType.SELECT_AUDIO;
-      selectedSlideUid: Slide["uid"];
-      selectedAudioUid: Audio["uid"];
-    }
+    type: PresentationActionType.SELECT_AUDIO;
+    selectedSlideUid: Slide["uid"];
+    selectedAudioUid: Audio["uid"];
+  }
   | {
-      type: PresentationActionType.DND_SLIDE;
-      fromUid: Slide["uid"];
-      toUid: Slide["uid"];
-    }
+    type: PresentationActionType.DND_SLIDE;
+    fromUid: Slide["uid"];
+    toUid: Slide["uid"];
+  }
   | {
-      type: PresentationActionType.ADD_SLIDE;
-      file: File;
-    }
+    type: PresentationActionType.ADD_SLIDE;
+    file: File;
+  }
   | {
-      type: PresentationActionType.ADD_SLIDE_DATA;
-      slide: Slide;
-    }
+    type: PresentationActionType.ADD_SLIDE_DATA;
+    slide: Slide;
+  }
   | {
-      type: PresentationActionType.SET_AUDIO_DEVICE;
-      deviceId: MediaDeviceInfo["deviceId"];
-    }
+    type: PresentationActionType.SET_AUDIO_DEVICE;
+    deviceId: MediaDeviceInfo["deviceId"];
+  }
   | {
-      type: PresentationActionType.SET_PRESENTATION_TITLE;
-      title: Presentation["title"];
-    }
+    type: PresentationActionType.SET_PRESENTATION_TITLE;
+    title: Presentation["title"];
+  }
   | {
-      type: PresentationActionType.SET_PRESENTATION_SIZE;
-      width: number;
-      height: number;
-    }
+    type: PresentationActionType.SET_PRESENTATION_SIZE;
+    width: number;
+    height: number;
+  }
   | {
-      type: PresentationActionType.CHANGE_SLIDE;
-      slideUid: Slide["uid"];
-      image: Slide["image"];
-    }
+    type: PresentationActionType.CHANGE_SLIDE;
+    slideUid: Slide["uid"];
+    image: Slide["image"];
+  }
   | {
-      type: PresentationActionType.DELETE_SLIDE;
-      slideUid: Slide["uid"];
-    }
+    type: PresentationActionType.DELETE_SLIDE;
+    slideUid: Slide["uid"];
+  }
   | {
-      type: PresentationActionType.SET_EXPORT_VIDEO_TYPE;
-      exportVideoType: ExportVideoType;
-    }
+    type: PresentationActionType.SET_EXPORT_VIDEO_TYPE;
+    exportVideoType: ExportVideoType;
+  }
   | {
-      type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS;
-    };
+    type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS;
+  };
 
 export const PresentationReducer = (
   state: PresentationState,

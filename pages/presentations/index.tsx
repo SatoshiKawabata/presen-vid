@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Header } from "../../src/components/Header";
 import Dexie from "dexie";
-import { Presentation } from "../../src/types";
 import { ListItem, List, Typography, Button } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
@@ -13,6 +12,8 @@ import { importFile } from "../../src/Utils";
 import JSZip from "jszip";
 import { GlobalContext } from "../../src/context/globalContext";
 import { GetServerSideProps } from "next";
+import { Presentation } from "../../src/domain/Presentation";
+import { useFetchPresentations } from "../../src/application/fetchPresentations";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
@@ -22,23 +23,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 export default function Presentations() {
   const router = useRouter();
-  const [presentations, setPresentations] = useState<Presentation[]>([]);
   const { setSnackbarState, setBackdropState } = useContext(GlobalContext);
 
-  useEffect(() => {
-    (async () => {
-      const db = new Dexie("montage");
-      db.version(1).stores({
-        presentations: "++id, title, slides",
-      });
-      const presentations = await db
-        .table<Presentation>("presentations")
-        .toArray();
-      setPresentations(presentations);
-    })();
-  }, []);
-
   const locale = useLocale();
+
+  const { presentations, fetchPresentations } = useFetchPresentations();
+  useEffect(() => {
+    fetchPresentations();
+  }, []);
+  console.log("presentations", presentations);
 
   return (
     <>

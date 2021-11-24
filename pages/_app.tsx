@@ -19,6 +19,7 @@ import * as gtag from "../src/analytics/gatag";
 import { useRouter } from "next/dist/client/router";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import { PresentationsProvider } from "../src/services/presentationsAdapter";
 
 Sentry.init({
   dsn: "https://0ea293edf9e54442b84086875522c78d@o287052.ingest.sentry.io/5886212",
@@ -47,35 +48,37 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [router.events]);
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalContext.Provider
-        value={{
-          setSnackbarState,
-          setBackdropState,
-        }}
-      >
-        <Component {...pageProps} />
-      </GlobalContext.Provider>
+    <PresentationsProvider>
+      <ThemeProvider theme={theme}>
+        <GlobalContext.Provider
+          value={{
+            setSnackbarState,
+            setBackdropState,
+          }}
+        >
+          <Component {...pageProps} />
+        </GlobalContext.Provider>
 
-      <Backdrop open={!!backdropState} style={{ zIndex: 9999, color: "#fff" }}>
-        <CircularProgress color="inherit" />
-        <Typography variant="h5" component="h1" color="inherit">
-          {backdropState?.message}
-        </Typography>
-      </Backdrop>
+        <Backdrop open={!!backdropState} style={{ zIndex: 9999, color: "#fff" }}>
+          <CircularProgress color="inherit" />
+          <Typography variant="h5" component="h1" color="inherit">
+            {backdropState?.message}
+          </Typography>
+        </Backdrop>
 
-      <Snackbar
-        open={!!snackbarState}
-        onClose={() => {
-          setSnackbarState(null);
-        }}
-        autoHideDuration={snackbarState?.duration || 6000}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <MuiAlert elevation={6} variant="filled" severity={snackbarState?.type}>
-          {snackbarState?.message}
-        </MuiAlert>
-      </Snackbar>
-    </ThemeProvider>
+        <Snackbar
+          open={!!snackbarState}
+          onClose={() => {
+            setSnackbarState(null);
+          }}
+          autoHideDuration={snackbarState?.duration || 6000}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <MuiAlert elevation={6} variant="filled" severity={snackbarState?.type}>
+            {snackbarState?.message}
+          </MuiAlert>
+        </Snackbar>
+      </ThemeProvider>
+    </PresentationsProvider>
   );
 }

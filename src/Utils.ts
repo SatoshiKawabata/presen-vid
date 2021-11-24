@@ -4,9 +4,10 @@ import getConfig from "next/config";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { v4 as uuidv4 } from "uuid";
 import { ExportVideoType } from "./reducers/PresentationReducer";
-import { Audio, Presentation } from "./types";
 import JSZip from "jszip";
 import Dexie from "dexie";
+import { Audio } from "./domain/Audio";
+import { Presentation } from "./domain/Presentation";
 
 export const goto404 = (ctx: GetServerSidePropsContext<ParsedUrlQuery>) => {
   // go to 404
