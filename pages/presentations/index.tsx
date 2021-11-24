@@ -3,7 +3,6 @@ import Head from "next/head";
 import Link from "next/link";
 import { Header } from "../../src/components/Header";
 import Dexie from "dexie";
-import { Presentation } from "../../src/types";
 import { ListItem, List, Typography, Button } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
@@ -13,6 +12,7 @@ import { importFile } from "../../src/Utils";
 import JSZip from "jszip";
 import { GlobalContext } from "../../src/context/globalContext";
 import { GetServerSideProps } from "next";
+import { Presentation } from "../../src/domain/Presentation";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");

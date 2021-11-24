@@ -1,5 +1,5 @@
 import React, { Dispatch, useContext, useState } from "react";
-import { Slide } from "../types";
+import { Slide } from "../domain/Slide";
 import {
   Button,
   MenuItem,

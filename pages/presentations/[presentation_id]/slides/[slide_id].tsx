@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import Head from "next/head";
 import { Header } from "../../../../src/components/Header";
 import Dexie from "dexie";
-import { Presentation, Slide as SlideData } from "../../../../src/types";
 import { useRouter } from "next/dist/client/router";
 import { SlideView } from "../../../../src/components/SlideView";
 import {
@@ -41,6 +40,8 @@ import { GlobalContext } from "../../../../src/context/globalContext";
 import * as gtag from "../../../../src/analytics/gatag";
 import { getExportVideoType } from "../../../../src/utils/LocalStorageUtils";
 import { GetServerSideProps } from "next";
+import { Presentation } from "../../../../src/domain/Presentation";
+import { Slide as SlideData } from "../../../../src/domain/Slide";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
