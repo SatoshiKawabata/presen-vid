@@ -207,9 +207,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
             </Select>
             {state.recordingState !== "recording" && (
               <audio
-                src={URL.createObjectURL(
-                  selectedAudio.blobForPreview || selectedAudio.blob
-                )}
+                src={URL.createObjectURL(selectedAudio.blob)}
                 controls
                 style={{ flexGrow: 1 }}
               />
@@ -251,9 +249,6 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               zip.file(slide.uid, slide.image);
               slide.audios.forEach((audio) => {
                 zip.file(audio.uid, audio.blob);
-                if (audio.blobForPreview) {
-                  zip.file(`${audio.uid}.preview`, audio.blobForPreview);
-                }
               });
               const json = JSON.stringify(slide);
               zip.file("slide.json", json);
