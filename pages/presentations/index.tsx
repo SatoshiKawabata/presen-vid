@@ -149,7 +149,6 @@ export default function Presentations() {
                   slide.image = image;
                   slide.audios.forEach((audio) => {
                     audio.blob = blobMap.get(audio.uid)!;
-                    audio.blobForPreview = blobMap.get(`${audio.uid}.preview`)!;
                   });
                 });
                 // Save to indexedDB

@@ -241,8 +241,7 @@ export const blob2audioData = async (
   const blobForPreview = await transcodeWebm2Wav(blob);
   const audio: Audio = {
     title,
-    blob,
-    blobForPreview,
+    blob: blobForPreview,
     durationMillisec,
     uid: uuidv4(),
   };
@@ -271,9 +270,6 @@ export const downloadPresentation = async (presentation: Presentation) => {
     zip.file(slide.uid, slide.image);
     slide.audios.forEach((audio) => {
       zip.file(audio.uid, audio.blob);
-      if (audio.blobForPreview) {
-        zip.file(`${audio.uid}.preview`, audio.blobForPreview);
-      }
     });
   });
   const json = JSON.stringify(presentation);

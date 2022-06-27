@@ -168,9 +168,7 @@ export default function Slide() {
         imageFiles.push(slide.image);
         for (const audio of slide.audios) {
           if (audio.uid === slide.selectedAudioUid) {
-            audios.push(
-              audio.blobForPreview ? audio.blobForPreview : audio.blob
-            );
+            audios.push(audio.blob);
             durations.push(audio.durationMillisec);
             break;
           }
@@ -399,9 +397,6 @@ export default function Slide() {
                     obj.image = image;
                     obj.audios.forEach((audio) => {
                       audio.blob = blobMap.get(audio.uid)!;
-                      audio.blobForPreview = blobMap.get(
-                        `${audio.uid}.preview`
-                      )!;
                     });
                     dispatch({
                       type: PresentationActionType.ADD_SLIDE_DATA,
