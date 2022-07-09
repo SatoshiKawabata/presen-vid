@@ -1,7 +1,8 @@
 import { Audio, Presentation, Slide } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { setExportVideoType } from "../utils/LocalStorageUtils";
-import { savePresentation } from "../Utils";
+import { usePresentationRepository } from "../adapter/usePresentationRepository";
+import { PresentationRepositoryType } from "../usecase/port/IPresentationRepository";
 
 export interface PresentationState {
   recordingState: RecordingState;
@@ -9,6 +10,7 @@ export interface PresentationState {
   presentation?: Presentation;
   audioDeviceId: MediaTrackConstraintSet["deviceId"];
   exportVideoType: ExportVideoType;
+  repositoryType: PresentationRepositoryType;
 }
 
 export enum ExportVideoType {
@@ -21,6 +23,7 @@ export const createInitialState = (): PresentationState => {
     recordingState: "inactive",
     audioDeviceId: "default",
     exportVideoType: ExportVideoType.WEBM,
+    repositoryType: PresentationRepositoryType.INDEXED_DB,
   };
 };
 
@@ -108,7 +111,8 @@ export const PresentationReducer = (
   state: PresentationState,
   action: PresentationAction
 ): PresentationState => {
-  const { presentation } = state;
+  const { presentation, repositoryType } = state;
+  const repository = usePresentationRepository(repositoryType);
   switch (action.type) {
     case PresentationActionType.SET_STATE:
       return {
@@ -135,7 +139,7 @@ export const PresentationReducer = (
             return slide;
           }),
         };
-        savePresentation(presentation);
+        repository.savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -159,7 +163,7 @@ export const PresentationReducer = (
             return slide;
           }),
         };
-        savePresentation(presentation);
+        repository.savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -181,7 +185,7 @@ export const PresentationReducer = (
           ...state.presentation,
           slides: newSlides,
         };
-        savePresentation(presentation);
+        repository.savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -204,7 +208,7 @@ export const PresentationReducer = (
             },
           ],
         };
-        savePresentation(newPresentation);
+        repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -218,7 +222,7 @@ export const PresentationReducer = (
           ...presentation,
           slides: [...presentation.slides, slide],
         };
-        savePresentation(newPresentation);
+        repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -236,7 +240,7 @@ export const PresentationReducer = (
           ...presentation,
           title: action.title,
         };
-        savePresentation(newPresentation);
+        repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -249,6 +253,7 @@ export const PresentationReducer = (
           width: action.width,
           height: action.height,
         });
+        repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -262,6 +267,7 @@ export const PresentationReducer = (
             image: action.image,
           }),
         });
+        repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -277,6 +283,7 @@ export const PresentationReducer = (
             return slide.uid !== action.slideUid;
           }),
         });
+        repository.savePresentation(newPresentation);
         const nextSelectedSlideIndex =
           deletedSlideIndex >= newPresentation.slides.length
             ? newPresentation.slides.length - 1
@@ -308,9 +315,13 @@ export const PresentationReducer = (
           }
           return slide;
         });
+        const newPresentation = updatePresentation(presentation, {
+          slides: newSlides,
+        });
+        repository.savePresentation(newPresentation);
         return {
           ...state,
-          presentation: updatePresentation(presentation, { slides: newSlides }),
+          presentation: newPresentation,
         };
       } else {
         return state;
@@ -345,6 +356,5 @@ const updatePresentation = (
     ...presentation,
     ...properties,
   };
-  savePresentation(newPresentation);
   return newPresentation;
 };

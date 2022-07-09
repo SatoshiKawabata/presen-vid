@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 import { ExportVideoType } from "./reducers/PresentationReducer";
 import { Audio, Presentation } from "./types";
 import JSZip from "jszip";
-import Dexie from "dexie";
 
 export const goto404 = (ctx: GetServerSidePropsContext<ParsedUrlQuery>) => {
   // go to 404
@@ -278,24 +277,4 @@ export const downloadPresentation = async (presentation: Presentation) => {
     console.log("onUpdate", metadata)
   );
   download(URL.createObjectURL(blob), `${presentation.title}.pvm`);
-};
-
-export const savePresentation = async (presentation: Presentation) => {
-  const db = new Dexie("montage");
-  db.version(1).stores({
-    presentations: "++id, title, slides",
-  });
-
-  await db
-    .table<Omit<Presentation, "id">>("presentations")
-    .update(presentation.id, presentation);
-};
-
-export const deletePresentation = async (id: Presentation["id"]) => {
-  const db = new Dexie("montage");
-  db.version(1).stores({
-    presentations: "++id, title, slides",
-  });
-
-  await db.table<Omit<Presentation, "id">>("presentations").delete(id);
 };

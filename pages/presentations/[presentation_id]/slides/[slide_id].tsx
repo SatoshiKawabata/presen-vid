@@ -27,7 +27,6 @@ import {
   downloadPresentation,
   getImageSize,
   importFile,
-  savePresentation,
 } from "../../../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../../../src/hooks/useLocale";
@@ -41,6 +40,9 @@ import { GlobalContext } from "../../../../src/context/globalContext";
 import * as gtag from "../../../../src/analytics/gatag";
 import { getExportVideoType } from "../../../../src/utils/LocalStorageUtils";
 import { GetServerSideProps } from "next";
+import { usePresentationRepository } from "../../../../src/adapter/usePresentationRepository";
+import { useUserConfigRepository } from "../../../../src/adapter/useUserConfigRepository";
+import { IPresentationRepository } from "../../../../src/usecase/port/IPresentationRepository";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
@@ -55,6 +57,9 @@ export default function Slide() {
     createInitialState()
   );
   const { setBackdropState } = useContext(GlobalContext);
+  const [repository, setRepository] = useState<IPresentationRepository | null>(
+    null
+  );
   const { presentation, selectedSlideUid } = state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
@@ -73,20 +78,18 @@ export default function Slide() {
     if (!router.isReady) {
       return;
     }
+    const userConfigRepository = useUserConfigRepository();
+    const repository = usePresentationRepository(
+      userConfigRepository.getPresentationRepositoryType()
+    );
+    setRepository(repository);
     const { presentation_id, slide_id } = router.query;
     const id = presentation_id;
     if (id && typeof id === "string") {
       const parsedId = parseInt(id);
 
       (async () => {
-        const db = new Dexie("montage");
-        db.version(1).stores({
-          presentations: "++id, title, slides",
-        });
-
-        const presentation = await db
-          .table<Presentation>("presentations")
-          .get(parsedId);
+        const presentation = await repository.getPresentation(parsedId);
 
         if (!presentation) {
           router.replace("/404");
@@ -101,11 +104,11 @@ export default function Slide() {
             downloadPresentation: (p: Presentation) => {
               downloadPresentation(p);
             },
-            savePresentationToIndexeddb: (p: Presentation) => {
+            savePresentationToRepository: (p: Presentation) => {
               if (!p) {
                 return;
               }
-              savePresentation(p);
+              repository.savePresentation(p);
             },
           };
         }

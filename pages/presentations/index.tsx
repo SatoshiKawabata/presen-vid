@@ -2,17 +2,22 @@ import React, { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Header } from "../../src/components/Header";
-import Dexie from "dexie";
 import { Presentation } from "../../src/types";
 import { ListItem, List, Typography, Button } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useRouter } from "next/dist/client/router";
-import { v4 as uuidv4 } from "uuid";
 import { useLocale } from "../../src/hooks/useLocale";
 import { importFile } from "../../src/Utils";
 import JSZip from "jszip";
 import { GlobalContext } from "../../src/context/globalContext";
 import { GetServerSideProps } from "next";
+import { usePresentationRepository } from "../../src/adapter/usePresentationRepository";
+import {
+  IPresentationRepository,
+  PresentationWithoutId,
+} from "../../src/usecase/port/IPresentationRepository";
+import { createPresentationWithoutIdData } from "../../src/utils/PresentationDataUtils";
+import { useUserConfigRepository } from "../../src/adapter/useUserConfigRepository";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
@@ -24,21 +29,27 @@ export default function Presentations() {
   const router = useRouter();
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const { setSnackbarState, setBackdropState } = useContext(GlobalContext);
+  const [repository, setRepository] = useState<IPresentationRepository | null>(
+    null
+  );
 
   useEffect(() => {
     (async () => {
-      const db = new Dexie("montage");
-      db.version(1).stores({
-        presentations: "++id, title, slides",
-      });
-      const presentations = await db
-        .table<Presentation>("presentations")
-        .toArray();
+      const userConfigRepository = useUserConfigRepository();
+      const repository = usePresentationRepository(
+        userConfigRepository.getPresentationRepositoryType()
+      );
+      setRepository(repository);
+      const presentations = await repository.getPresentations();
       setPresentations(presentations);
     })();
   }, []);
 
   const locale = useLocale();
+
+  if (!repository) {
+    return null;
+  }
 
   return (
     <>
@@ -61,26 +72,15 @@ export default function Presentations() {
           onClick={async () => {
             try {
               const files = await importFile("image/*", true);
-              const db = new Dexie("montage");
-              db.version(1).stores({
-                presentations: "++id, title, slides",
-              });
-              const id = await db
-                .table<Omit<Presentation, "id">>("presentations")
-                .add({
-                  title: `New Presentation ${presentations.length}`,
-                  slides: Array.from(files).map((file) => {
-                    return {
-                      uid: uuidv4(),
-                      title: file.name,
-                      image: file,
-                      audios: [],
-                    };
-                  }),
-                  width: 0,
-                  height: 0,
-                });
-              router.push(`/presentations/${id}`);
+              const title = `New Presentation ${presentations.length}`;
+              const newPresentation = createPresentationWithoutIdData(
+                title,
+                files
+              );
+              const presentation = await repository.createPresentation(
+                newPresentation
+              );
+              router.push(`/presentations/${presentation.id}`);
             } catch (e) {
               setSnackbarState({
                 type: "error",
@@ -151,20 +151,18 @@ export default function Presentations() {
                     audio.blob = blobMap.get(audio.uid)!;
                   });
                 });
-                // Save to indexedDB
-                const db = new Dexie("montage");
-                db.version(1).stores({
-                  presentations: "++id, title, slides",
-                });
-                const newPresentationData: Omit<Presentation, "id"> = {
+
+                const newPresentationData: PresentationWithoutId = {
                   title: obj.title,
                   slides: obj.slides,
                   width: obj.width,
                   height: obj.height,
                 };
-                const id = await db
-                  .table<Omit<Presentation, "id">>("presentations")
-                  .add(newPresentationData);
+
+                const { id } = await repository.createPresentation(
+                  newPresentationData
+                );
+
                 router.push(`/presentations/${id}`);
               } else {
                 setSnackbarState({

@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { useRouter } from "next/dist/client/router";
 import React, { Dispatch, useContext, useEffect, useState } from "react";
+import { usePresentationRepository } from "../adapter/usePresentationRepository";
 import { GlobalContext } from "../context/globalContext";
 import { useLocale } from "../hooks/useLocale";
 import {
@@ -20,7 +21,6 @@ import {
   PresentationActionType,
   PresentationState,
 } from "../reducers/PresentationReducer";
-import { deletePresentation } from "../Utils";
 
 interface P {
   dispatch: Dispatch<PresentationAction>;
@@ -28,10 +28,12 @@ interface P {
 }
 
 export const Settings = ({ dispatch, state }: P) => {
-  const { audioDeviceId, exportVideoType, presentation } = state;
+  const { audioDeviceId, exportVideoType, presentation, repositoryType } =
+    state;
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const router = useRouter();
   const { setSnackbarState } = useContext(GlobalContext);
+  const repository = usePresentationRepository(repositoryType);
   useEffect(() => {
     (async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -196,7 +198,7 @@ export const Settings = ({ dispatch, state }: P) => {
           <Button
             onClick={async () => {
               if (presentation) {
-                await deletePresentation(presentation.id);
+                await repository.deletePresentation(presentation.id);
                 setSnackbarState({
                   type: "success",
                   message: t.DELETED_PRESENTATION,
