@@ -27,7 +27,6 @@ import {
   downloadPresentation,
   getImageSize,
   importFile,
-  savePresentation,
 } from "../../../../src/Utils";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { useLocale } from "../../../../src/hooks/useLocale";
@@ -54,7 +53,9 @@ export default function Slide() {
     PresentationReducer,
     createInitialState()
   );
-  const { setBackdropState } = useContext(GlobalContext);
+  const { setBackdropState, getPresentationRepository } =
+    useContext(GlobalContext);
+  const repository = getPresentationRepository();
   const { presentation, selectedSlideUid } = state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
@@ -79,14 +80,7 @@ export default function Slide() {
       const parsedId = parseInt(id);
 
       (async () => {
-        const db = new Dexie("montage");
-        db.version(1).stores({
-          presentations: "++id, title, slides",
-        });
-
-        const presentation = await db
-          .table<Presentation>("presentations")
-          .get(parsedId);
+        const presentation = await repository.getPresentation(parsedId);
 
         if (!presentation) {
           router.replace("/404");
@@ -101,11 +95,11 @@ export default function Slide() {
             downloadPresentation: (p: Presentation) => {
               downloadPresentation(p);
             },
-            savePresentationToIndexeddb: (p: Presentation) => {
+            savePresentationToRepository: (p: Presentation) => {
               if (!p) {
                 return;
               }
-              savePresentation(p);
+              repository.savePresentation(p);
             },
           };
         }
@@ -142,6 +136,7 @@ export default function Slide() {
           type: PresentationActionType.SET_PRESENTATION_SIZE,
           width: maxSize.width,
           height: maxSize.height,
+          repository,
         });
       })();
     } else {
@@ -335,6 +330,7 @@ export default function Slide() {
                             type: PresentationActionType.DND_SLIDE,
                             fromUid,
                             toUid: slide.uid,
+                            repository,
                           });
                           e.stopPropagation();
                         }}
@@ -401,9 +397,14 @@ export default function Slide() {
                     dispatch({
                       type: PresentationActionType.ADD_SLIDE_DATA,
                       slide: obj,
+                      repository,
                     });
                   } else {
-                    dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                    dispatch({
+                      type: PresentationActionType.ADD_SLIDE,
+                      file,
+                      repository,
+                    });
                   }
                 }
               }}

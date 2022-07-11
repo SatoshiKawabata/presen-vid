@@ -73,4 +73,6 @@ export const ja = {
   LP_USECASE_3_BALLOON: "無料で済ませたい！",
   LP_USECASE_3: "もちろん無料で使えます。",
   EXPORT_VIDEO_TYPE: "書き出すビデオの形式",
+  LOAD_PRESENTATION_DIRECTORY:
+    "プレゼンテーションフォルダーを読み込んでください。(Beta機能)",
 };

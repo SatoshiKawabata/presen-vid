@@ -20,7 +20,6 @@ import {
   PresentationActionType,
   PresentationState,
 } from "../reducers/PresentationReducer";
-import { deletePresentation } from "../Utils";
 
 interface P {
   dispatch: Dispatch<PresentationAction>;
@@ -31,7 +30,9 @@ export const Settings = ({ dispatch, state }: P) => {
   const { audioDeviceId, exportVideoType, presentation } = state;
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const router = useRouter();
-  const { setSnackbarState } = useContext(GlobalContext);
+  const { setSnackbarState, getPresentationRepository } =
+    useContext(GlobalContext);
+  const repository = getPresentationRepository();
   useEffect(() => {
     (async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -50,7 +51,10 @@ export const Settings = ({ dispatch, state }: P) => {
   }, []);
 
   const deleteUnusedAudioData = async () => {
-    dispatch({ type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS });
+    dispatch({
+      type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS,
+      repository,
+    });
   };
 
   const hasUnusedAudioTracks = state.presentation?.slides.some(
@@ -83,6 +87,7 @@ export const Settings = ({ dispatch, state }: P) => {
             dispatch({
               type: PresentationActionType.SET_PRESENTATION_TITLE,
               title: e.target.value,
+              repository,
             });
           }}
         />
@@ -196,7 +201,7 @@ export const Settings = ({ dispatch, state }: P) => {
           <Button
             onClick={async () => {
               if (presentation) {
-                await deletePresentation(presentation.id);
+                await repository.deletePresentation(presentation.id);
                 setSnackbarState({
                   type: "success",
                   message: t.DELETED_PRESENTATION,

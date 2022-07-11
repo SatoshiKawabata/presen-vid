@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  IPresentationRepository,
+  PresentationRepositoryType,
+} from "../usecase/port/IPresentationRepository";
 
 export interface SnackbarState {
   type: "success" | "info" | "warning" | "error";
@@ -10,12 +14,13 @@ export interface BackdropState {
   message: string;
 }
 
-interface ContextType {
+interface GlobalContextType {
   setSnackbarState: (state: SnackbarState | null) => void;
   setBackdropState: (state: BackdropState | null) => void;
+  getPresentationRepositoryType(): PresentationRepositoryType;
+  setPresentationRepositoryType(type: PresentationRepositoryType): void;
+  setPresentationRepository(repository: IPresentationRepository): void;
+  getPresentationRepository(): IPresentationRepository;
 }
 
-export const GlobalContext = React.createContext<ContextType>({
-  setSnackbarState: () => {},
-  setBackdropState: () => {},
-});
+export const GlobalContext = React.createContext<GlobalContextType>({} as any);
