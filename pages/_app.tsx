@@ -19,6 +19,12 @@ import * as gtag from "../src/analytics/gatag";
 import { useRouter } from "next/dist/client/router";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import {
+  IPresentationRepository,
+  PresentationRepositoryType,
+} from "../src/usecase/port/IPresentationRepository";
+import { useUserConfigRepository } from "../src/adapter/useUserConfigRepository";
+import { usePresentationRepository } from "../src/adapter/usePresentationRepository";
 
 Sentry.init({
   dsn: "https://0ea293edf9e54442b84086875522c78d@o287052.ingest.sentry.io/5886212",
@@ -32,10 +38,29 @@ Sentry.init({
 
 export default function App({ Component, pageProps }: AppProps) {
   const theme = createMuiTheme(jaJP);
-  const [snackbarState, setSnackbarState] =
-    useState<SnackbarState | null>(null);
-  const [backdropState, setBackdropState] =
-    useState<BackdropState | null>(null);
+  const [snackbarState, setSnackbarState] = useState<SnackbarState | null>(
+    null
+  );
+  const [backdropState, setBackdropState] = useState<BackdropState | null>(
+    null
+  );
+  const [presentationRepository, setPresentationRepository] =
+    useState<IPresentationRepository>(
+      usePresentationRepository(PresentationRepositoryType.INDEXED_DB)
+    );
+  const [presentationRepositoryType, setPresentationRepositoryType] =
+    useState<PresentationRepositoryType>(PresentationRepositoryType.INDEXED_DB);
+
+  useEffect(() => {
+    const repository = usePresentationRepository(presentationRepositoryType);
+    setPresentationRepository(repository);
+  }, [presentationRepositoryType]);
+
+  useEffect(() => {
+    const config = useUserConfigRepository();
+    setPresentationRepositoryType(config.getPresentationRepositoryType());
+  }, []);
+
   const router = useRouter();
   useEffect(() => {
     const handleRouteChange = (url: string) => {
@@ -52,6 +77,14 @@ export default function App({ Component, pageProps }: AppProps) {
         value={{
           setSnackbarState,
           setBackdropState,
+          getPresentationRepositoryType: () => presentationRepositoryType,
+          setPresentationRepositoryType: (type: PresentationRepositoryType) => {
+            const config = useUserConfigRepository();
+            config.setPresentationRepositoryType(type);
+            setPresentationRepositoryType(type);
+          },
+          setPresentationRepository,
+          getPresentationRepository: () => presentationRepository,
         }}
       >
         <Component {...pageProps} />

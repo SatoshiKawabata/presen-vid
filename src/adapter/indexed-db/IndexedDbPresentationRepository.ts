@@ -2,13 +2,14 @@ import Dexie from "dexie";
 import { Presentation } from "../../types";
 import {
   IPresentationRepository,
+  PresentationListItem,
   PresentationWithoutId,
 } from "../../usecase/port/IPresentationRepository";
 
 export class IndexedDbPresentationRepository
   implements IPresentationRepository
 {
-  async getPresentations(): Promise<Presentation[]> {
+  async getPresentationList(): Promise<PresentationListItem[]> {
     const db = new Dexie("montage");
     db.version(1).stores({
       presentations: "++id, title, slides",
@@ -16,7 +17,7 @@ export class IndexedDbPresentationRepository
     const presentations = await db
       .table<Presentation>("presentations")
       .toArray();
-    return presentations;
+    return presentations.map(({ id, title }) => ({ id, title }));
   }
 
   async getPresentation(

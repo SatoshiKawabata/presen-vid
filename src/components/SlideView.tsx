@@ -38,7 +38,9 @@ enum MoreMenuItems {
 
 export const SlideView = ({ slide, dispatch, state }: P) => {
   const [recorder, setRecorder] = useState<MediaRecorder | undefined>();
-  const { setBackdropState, setSnackbarState } = useContext(GlobalContext);
+  const { setBackdropState, setSnackbarState, getPresentationRepository } =
+    useContext(GlobalContext);
+  const repository = getPresentationRepository();
   const setRecortingState = (recordingState: RecordingState) => {
     dispatch({
       type: PresentationActionType.SET_RECORDING_STATE,
@@ -146,6 +148,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                   selectedSlideUid: slide.uid,
                   audio,
                   recordingState: _recorder.state,
+                  repository,
                 });
                 gtag.event({
                   action: "record-audio",
@@ -189,6 +192,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                     type: PresentationActionType.SELECT_AUDIO,
                     selectedSlideUid: slide.uid,
                     selectedAudioUid: newSelectedAudio.uid,
+                    repository,
                   });
               }}
               style={{ margin: "0 4px", flexGrow: 0.1 }}
@@ -237,6 +241,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                     type: PresentationActionType.CHANGE_SLIDE,
                     slideUid: slide.uid,
                     image: file,
+                    repository,
                   });
                 }
               };
@@ -279,6 +284,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
                   type: PresentationActionType.ADD_AUDIO,
                   selectedSlideUid: slide.uid,
                   audio,
+                  repository,
                 });
                 setBackdropState(null);
               });
@@ -314,6 +320,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
               dispatch({
                 type: PresentationActionType.DELETE_SLIDE,
                 slideUid: slide.uid,
+                repository,
               });
               setSnackbarState({
                 type: "success",

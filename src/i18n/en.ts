@@ -71,4 +71,5 @@ export const en = {
   LP_USECASE_3_BALLOON: "I want it to be free!",
   LP_USECASE_3: "Of course it's free.",
   EXPORT_VIDEO_TYPE: "Export video type",
+  LOAD_PRESENTATION_DIRECTORY: "Load presentation directory (Beta feature).",
 };

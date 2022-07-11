@@ -40,9 +40,6 @@ import { GlobalContext } from "../../../../src/context/globalContext";
 import * as gtag from "../../../../src/analytics/gatag";
 import { getExportVideoType } from "../../../../src/utils/LocalStorageUtils";
 import { GetServerSideProps } from "next";
-import { usePresentationRepository } from "../../../../src/adapter/usePresentationRepository";
-import { useUserConfigRepository } from "../../../../src/adapter/useUserConfigRepository";
-import { IPresentationRepository } from "../../../../src/usecase/port/IPresentationRepository";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
@@ -56,10 +53,9 @@ export default function Slide() {
     PresentationReducer,
     createInitialState()
   );
-  const { setBackdropState } = useContext(GlobalContext);
-  const [repository, setRepository] = useState<IPresentationRepository | null>(
-    null
-  );
+  const { setBackdropState, getPresentationRepository } =
+    useContext(GlobalContext);
+  const repository = getPresentationRepository();
   const { presentation, selectedSlideUid } = state;
   const selectedSlide = presentation?.slides.find(
     (slide) => slide.uid === selectedSlideUid
@@ -78,11 +74,6 @@ export default function Slide() {
     if (!router.isReady) {
       return;
     }
-    const userConfigRepository = useUserConfigRepository();
-    const repository = usePresentationRepository(
-      userConfigRepository.getPresentationRepositoryType()
-    );
-    setRepository(repository);
     const { presentation_id, slide_id } = router.query;
     const id = presentation_id;
     if (id && typeof id === "string") {
@@ -145,6 +136,7 @@ export default function Slide() {
           type: PresentationActionType.SET_PRESENTATION_SIZE,
           width: maxSize.width,
           height: maxSize.height,
+          repository,
         });
       })();
     } else {
@@ -338,6 +330,7 @@ export default function Slide() {
                             type: PresentationActionType.DND_SLIDE,
                             fromUid,
                             toUid: slide.uid,
+                            repository,
                           });
                           e.stopPropagation();
                         }}
@@ -404,9 +397,14 @@ export default function Slide() {
                     dispatch({
                       type: PresentationActionType.ADD_SLIDE_DATA,
                       slide: obj,
+                      repository,
                     });
                   } else {
-                    dispatch({ type: PresentationActionType.ADD_SLIDE, file });
+                    dispatch({
+                      type: PresentationActionType.ADD_SLIDE,
+                      file,
+                      repository,
+                    });
                   }
                 }
               }}

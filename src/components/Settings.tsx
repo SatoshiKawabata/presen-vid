@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import { useRouter } from "next/dist/client/router";
 import React, { Dispatch, useContext, useEffect, useState } from "react";
-import { usePresentationRepository } from "../adapter/usePresentationRepository";
 import { GlobalContext } from "../context/globalContext";
 import { useLocale } from "../hooks/useLocale";
 import {
@@ -28,12 +27,12 @@ interface P {
 }
 
 export const Settings = ({ dispatch, state }: P) => {
-  const { audioDeviceId, exportVideoType, presentation, repositoryType } =
-    state;
+  const { audioDeviceId, exportVideoType, presentation } = state;
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const router = useRouter();
-  const { setSnackbarState } = useContext(GlobalContext);
-  const repository = usePresentationRepository(repositoryType);
+  const { setSnackbarState, getPresentationRepository } =
+    useContext(GlobalContext);
+  const repository = getPresentationRepository();
   useEffect(() => {
     (async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -52,7 +51,10 @@ export const Settings = ({ dispatch, state }: P) => {
   }, []);
 
   const deleteUnusedAudioData = async () => {
-    dispatch({ type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS });
+    dispatch({
+      type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS,
+      repository,
+    });
   };
 
   const hasUnusedAudioTracks = state.presentation?.slides.some(
@@ -85,6 +87,7 @@ export const Settings = ({ dispatch, state }: P) => {
             dispatch({
               type: PresentationActionType.SET_PRESENTATION_TITLE,
               title: e.target.value,
+              repository,
             });
           }}
         />

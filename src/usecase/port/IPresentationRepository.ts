@@ -1,9 +1,10 @@
 import { Presentation } from "../../types";
 
 export type PresentationWithoutId = Omit<Presentation, "id">;
+export type PresentationListItem = Pick<Presentation, "id" | "title">;
 
 export interface IPresentationRepository {
-  getPresentations: () => Promise<Presentation[]>;
+  getPresentationList: () => Promise<PresentationListItem[]>;
   getPresentation: (
     presentationId: Presentation["id"]
   ) => Promise<Presentation>;

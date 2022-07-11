@@ -1,8 +1,7 @@
 import { Audio, Presentation, Slide } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { setExportVideoType } from "../utils/LocalStorageUtils";
-import { usePresentationRepository } from "../adapter/usePresentationRepository";
-import { PresentationRepositoryType } from "../usecase/port/IPresentationRepository";
+import { IPresentationRepository } from "../usecase/port/IPresentationRepository";
 
 export interface PresentationState {
   recordingState: RecordingState;
@@ -10,7 +9,6 @@ export interface PresentationState {
   presentation?: Presentation;
   audioDeviceId: MediaTrackConstraintSet["deviceId"];
   exportVideoType: ExportVideoType;
-  repositoryType: PresentationRepositoryType;
 }
 
 export enum ExportVideoType {
@@ -23,7 +21,6 @@ export const createInitialState = (): PresentationState => {
     recordingState: "inactive",
     audioDeviceId: "default",
     exportVideoType: ExportVideoType.WEBM,
-    repositoryType: PresentationRepositoryType.INDEXED_DB,
   };
 };
 
@@ -58,24 +55,29 @@ export type PresentationAction =
       audio: Audio;
       selectedSlideUid: Slide["uid"];
       recordingState?: RecordingState;
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.SELECT_AUDIO;
       selectedSlideUid: Slide["uid"];
       selectedAudioUid: Audio["uid"];
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.DND_SLIDE;
       fromUid: Slide["uid"];
       toUid: Slide["uid"];
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.ADD_SLIDE;
       file: File;
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.ADD_SLIDE_DATA;
       slide: Slide;
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.SET_AUDIO_DEVICE;
@@ -84,20 +86,24 @@ export type PresentationAction =
   | {
       type: PresentationActionType.SET_PRESENTATION_TITLE;
       title: Presentation["title"];
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.SET_PRESENTATION_SIZE;
       width: number;
       height: number;
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.CHANGE_SLIDE;
       slideUid: Slide["uid"];
       image: Slide["image"];
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.DELETE_SLIDE;
       slideUid: Slide["uid"];
+      repository: IPresentationRepository;
     }
   | {
       type: PresentationActionType.SET_EXPORT_VIDEO_TYPE;
@@ -105,14 +111,14 @@ export type PresentationAction =
     }
   | {
       type: PresentationActionType.DELETE_UNUSED_AUDIO_TRACKS;
+      repository: IPresentationRepository;
     };
 
 export const PresentationReducer = (
   state: PresentationState,
   action: PresentationAction
 ): PresentationState => {
-  const { presentation, repositoryType } = state;
-  const repository = usePresentationRepository(repositoryType);
+  const { presentation } = state;
   switch (action.type) {
     case PresentationActionType.SET_STATE:
       return {
@@ -139,7 +145,7 @@ export const PresentationReducer = (
             return slide;
           }),
         };
-        repository.savePresentation(presentation);
+        action.repository.savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -163,7 +169,7 @@ export const PresentationReducer = (
             return slide;
           }),
         };
-        repository.savePresentation(presentation);
+        action.repository.savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -185,7 +191,7 @@ export const PresentationReducer = (
           ...state.presentation,
           slides: newSlides,
         };
-        repository.savePresentation(presentation);
+        action.repository.savePresentation(presentation);
         return {
           ...state,
           presentation,
@@ -208,7 +214,7 @@ export const PresentationReducer = (
             },
           ],
         };
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -222,7 +228,7 @@ export const PresentationReducer = (
           ...presentation,
           slides: [...presentation.slides, slide],
         };
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -240,7 +246,7 @@ export const PresentationReducer = (
           ...presentation,
           title: action.title,
         };
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -253,7 +259,7 @@ export const PresentationReducer = (
           width: action.width,
           height: action.height,
         });
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -267,7 +273,7 @@ export const PresentationReducer = (
             image: action.image,
           }),
         });
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
@@ -283,7 +289,7 @@ export const PresentationReducer = (
             return slide.uid !== action.slideUid;
           }),
         });
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         const nextSelectedSlideIndex =
           deletedSlideIndex >= newPresentation.slides.length
             ? newPresentation.slides.length - 1
@@ -318,7 +324,7 @@ export const PresentationReducer = (
         const newPresentation = updatePresentation(presentation, {
           slides: newSlides,
         });
-        repository.savePresentation(newPresentation);
+        action.repository.savePresentation(newPresentation);
         return {
           ...state,
           presentation: newPresentation,
