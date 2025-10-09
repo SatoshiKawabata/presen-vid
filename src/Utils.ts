@@ -199,11 +199,29 @@ export const importFile = (accept?: string, multiple: boolean = false) => {
 export const getImageSize = async (src: string) => {
   const img = new Image();
   img.src = src;
-  await img.decode();
-  return {
-    width: img.naturalWidth,
-    height: img.naturalHeight,
-  };
+  try {
+    if (typeof img.decode === "function") {
+      await img.decode();
+      return {
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      };
+    }
+  } catch (err) {
+    console.warn("img.decode failed, fallback to onload handler", err);
+  }
+
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    img.onload = () => {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      });
+    };
+    img.onerror = (event) => {
+      reject(event);
+    };
+  });
 };
 
 export const transcodeWebm2Wav = async (audio: Blob) => {
