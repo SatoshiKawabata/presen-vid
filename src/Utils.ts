@@ -61,12 +61,27 @@ export const createVideo = async (
   exportVideoType: ExportVideoType
 ) => {
   let { width, height } = size;
+
+  // Validate image size
+  if (width <= 0 || height <= 0) {
+    throw new Error(
+      `Invalid image size: ${width}x${height}. Image size must be greater than 0.`
+    );
+  }
+
   if (width % 2 === 1) {
     width++;
   }
   if (height % 2 === 1) {
     height++;
   }
+
+  console.log("Creating video with size:", {
+    width,
+    height,
+    originalSize: size,
+  });
+
   if (!ffmpeg.isLoaded()) {
     await ffmpeg.load();
   }
@@ -89,29 +104,60 @@ export const createVideo = async (
     audioNames.push(audioName);
     const fetchedAudio = await fetchFile(audio);
     ffmpeg.FS("writeFile", audioName, fetchedAudio);
+
     // 画像だけの動画を作る
     const tmpVideoName = `tmp_${imageName}.${exportVideoType}`;
-    await ffmpeg.run(
-      "-framerate",
-      "30",
-      "-i",
+    console.log(`Processing slide ${i + 1}/${imageFiles.length}:`, {
       imageName,
-      "-i",
       audioName,
-      "-t",
-      duration / 1000 + "",
-      "-ar",
-      "48000",
-      "-c:a",
-      getAudioCodec(exportVideoType),
-      "-c:v",
-      getVideoCodec(exportVideoType),
-      "-s",
-      `${width}x${height}`,
-      // "-pix_fmt",
-      // "yuv420p",
-      tmpVideoName
-    );
+      tmpVideoName,
+      duration: duration / 1000,
+      size: `${width}x${height}`,
+      fileSize: file.size,
+      audioSize: audio.size,
+    });
+
+    try {
+      await ffmpeg.run(
+        "-framerate",
+        "30",
+        "-i",
+        imageName,
+        "-i",
+        audioName,
+        "-t",
+        duration / 1000 + "",
+        "-ar",
+        "48000",
+        "-c:a",
+        getAudioCodec(exportVideoType),
+        "-c:v",
+        getVideoCodec(exportVideoType),
+        "-s",
+        `${width}x${height}`,
+        "-pix_fmt",
+        "yuv420p",
+        tmpVideoName
+      );
+
+      // Verify the output file was created
+      try {
+        const outputFile = ffmpeg.FS("readFile", tmpVideoName);
+        if (outputFile.length === 0) {
+          throw new Error(`Generated video file is empty: ${tmpVideoName}`);
+        }
+        console.log(
+          `Successfully created video: ${tmpVideoName} (${outputFile.length} bytes)`
+        );
+      } catch (readError) {
+        throw new Error(
+          `Failed to read generated video file: ${tmpVideoName}. ${readError}`
+        );
+      }
+    } catch (ffmpegError) {
+      console.error(`FFmpeg error for slide ${i + 1}:`, ffmpegError);
+      throw new Error(`Failed to process slide ${i + 1}: ${ffmpegError}`);
+    }
     fileList += `file '${tmpVideoName}'\n`;
     // 最後に無音を追加する(https://github.com/SatoshiKawabata/montage/issues/33)
     if (i === imageFiles.length - 1) {
@@ -141,32 +187,55 @@ export const createVideo = async (
   ffmpeg.FS("writeFile", "fileList.txt", new TextEncoder().encode(fileList));
   // 動画を連結する
   console.log("動画を連結する");
-  await ffmpeg.run(
-    "-f",
-    "concat",
-    "-i",
-    "fileList.txt",
-    "-framerate",
-    "30",
-    "-c",
-    "copy", // 再エンコードせずにコーデックをそのまま使う
-    `result.${exportVideoType}`
-  );
-  const data = ffmpeg.FS("readFile", `result.${exportVideoType}`);
-  const result = new Blob([data.buffer], { type: `video/${exportVideoType}` });
+  console.log("File list:", fileList);
+
+  try {
+    await ffmpeg.run(
+      "-f",
+      "concat",
+      "-i",
+      "fileList.txt",
+      "-framerate",
+      "30",
+      "-c",
+      "copy", // 再エンコードせずにコーデックをそのまま使う
+      `result.${exportVideoType}`
+    );
+
+    // Verify the final result file was created
+    try {
+      const data = ffmpeg.FS("readFile", `result.${exportVideoType}`);
+      if (data.length === 0) {
+        throw new Error("Final video file is empty");
+      }
+      console.log(`Successfully created final video: ${data.length} bytes`);
+      const result = new Blob([data.buffer], {
+        type: `video/${exportVideoType}`,
+      });
+      return result;
+    } catch (readError) {
+      throw new Error(`Failed to read final video file: ${readError}`);
+    }
+  } catch (concatError) {
+    console.error("Video concatenation error:", concatError);
+    throw new Error(`Failed to concatenate videos: ${concatError}`);
+  }
 
   // unlink file
-  ffmpeg.FS("unlink", "fileList.txt");
-  ffmpeg.FS("unlink", `result.${exportVideoType}`);
-  for (const audioName of audioNames) {
-    ffmpeg.FS("unlink", audioName);
+  try {
+    ffmpeg.FS("unlink", "fileList.txt");
+    ffmpeg.FS("unlink", `result.${exportVideoType}`);
+    for (const audioName of audioNames) {
+      ffmpeg.FS("unlink", audioName);
+    }
+    for (const imageName of imageNames) {
+      ffmpeg.FS("unlink", imageName);
+      const tmpVideoName = `tmp_${imageName}.${exportVideoType}`;
+      ffmpeg.FS("unlink", tmpVideoName);
+    }
+  } catch (cleanupError) {
+    console.warn("Cleanup error (non-critical):", cleanupError);
   }
-  for (const imageName of imageNames) {
-    ffmpeg.FS("unlink", imageName);
-    const tmpVideoName = `tmp_${imageName}.${exportVideoType}`;
-    ffmpeg.FS("unlink", tmpVideoName);
-  }
-  return result;
 };
 
 export const download = (href: string, name: string) => {
@@ -197,30 +266,37 @@ export const importFile = (accept?: string, multiple: boolean = false) => {
 };
 
 export const getImageSize = async (src: string) => {
-  const img = new Image();
-  img.src = src;
-  try {
-    if (typeof img.decode === "function") {
-      await img.decode();
-      return {
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-      };
-    }
-  } catch (err) {
-    console.warn("img.decode failed, fallback to onload handler", err);
-  }
-
   return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    const img = new Image();
+
     img.onload = () => {
-      resolve({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-      });
+      const width = img.naturalWidth || img.width;
+      const height = img.naturalHeight || img.height;
+
+      if (width === 0 || height === 0) {
+        console.error("Invalid image size:", { width, height, src });
+        reject(new Error(`Invalid image size: ${width}x${height}`));
+        return;
+      }
+
+      console.log("Image size loaded:", { width, height, src });
+      resolve({ width, height });
     };
+
     img.onerror = (event) => {
-      reject(event);
+      console.error("Image load error:", event, src);
+      reject(new Error(`Failed to load image: ${src}`));
     };
+
+    // Set src after setting up event handlers
+    img.src = src;
+
+    // Fallback timeout
+    setTimeout(() => {
+      if (img.naturalWidth === 0 && img.naturalHeight === 0) {
+        reject(new Error(`Image load timeout: ${src}`));
+      }
+    }, 5000);
   });
 };
 
