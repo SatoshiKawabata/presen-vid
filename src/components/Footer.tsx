@@ -1,7 +1,7 @@
 import React from "react";
 import Copyright from "./Copyright";
-import GitHubIcon from "@material-ui/icons/GitHub";
-import TwitterIcon from "@material-ui/icons/Twitter";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import TwitterIcon from "@mui/icons-material/Twitter";
 
 export const Footer = () => {
   return (

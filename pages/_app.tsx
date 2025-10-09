@@ -1,20 +1,20 @@
 import "../styles/global.css";
 import { AppProps } from "next/app";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import { jaJP } from "@material-ui/core/locale";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { jaJP } from "@mui/material/locale";
 import {
   BackdropState,
   GlobalContext,
   SnackbarState,
 } from "../src/context/globalContext";
 import { useEffect, useState } from "react";
-import MuiAlert from "@material-ui/lab/Alert";
+import MuiAlert from "@mui/lab/Alert";
 import {
   Typography,
   Backdrop,
   CircularProgress,
   Snackbar,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as gtag from "../src/analytics/gatag";
 import { useRouter } from "next/dist/client/router";
 import * as Sentry from "@sentry/react";
@@ -37,7 +37,7 @@ Sentry.init({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const theme = createMuiTheme(jaJP);
+  const theme = createTheme(jaJP);
   const [snackbarState, setSnackbarState] = useState<SnackbarState | null>(
     null
   );

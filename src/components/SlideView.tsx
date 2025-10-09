@@ -7,19 +7,19 @@ import {
   Select,
   Tooltip,
   Typography,
-} from "@material-ui/core";
+  Box,
+} from "@mui/material";
 import {
   PresentationAction,
   PresentationActionType,
   PresentationState,
 } from "../reducers/PresentationReducer";
 import { useLocale } from "../hooks/useLocale";
-import StopIcon from "@material-ui/icons/Stop";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import StopIcon from "@mui/icons-material/Stop";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { MoreButton } from "./MoreButton";
 import { blob2audioData, download, importFile } from "../Utils";
 import { GlobalContext } from "../context/globalContext";
-import { useModalPaperStyles } from "./Settings";
 import * as gtag from "../analytics/gatag";
 import JSZip from "jszip";
 
@@ -49,7 +49,6 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
   };
   const [isOpenedDeleteSlideModal, setIsOpenedDeleteSlideModal] =
     useState(false);
-  const classes = useModalPaperStyles();
 
   const selectedAudio = slide.audios.find(
     (audio) => audio.uid === slide.selectedAudioUid
@@ -92,7 +91,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           placement="top"
         >
           <Button
-            color="default"
+            color="inherit"
             style={{
               position: "absolute",
               bottom: "8px",
@@ -298,7 +297,19 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
         onClose={() => setIsOpenedDeleteSlideModal(false)}
         aria-labelledby={locale.t.DELETE_SLIDE_MODAL_TITLE}
       >
-        <div className={classes.paper}>
+        <Box
+          sx={{
+            position: "absolute",
+            width: 500,
+            backgroundColor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 5,
+            padding: "16px 32px 24px",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
           <Typography
             variant="subtitle2"
             component="h2"
@@ -311,7 +322,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
             onClick={() => {
               setIsOpenedDeleteSlideModal(false);
             }}
-            color="default"
+            color="inherit"
           >
             {locale.t.NO}
           </Button>
@@ -332,7 +343,7 @@ export const SlideView = ({ slide, dispatch, state }: P) => {
           >
             {locale.t.YES}
           </Button>
-        </div>
+        </Box>
       </Modal>
     </>
   );

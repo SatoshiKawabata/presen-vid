@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Header } from "../src/components/Header";
 import { useLocale } from "../src/hooks/useLocale";
-import { Button, Container, CssBaseline, Typography } from "@material-ui/core";
+import { Button, Container, CssBaseline, Typography } from "@mui/material";
 import SlidesSvg from "../src/assets/slides.svg";
 import RecordSvg from "../src/assets/record.svg";
 import ExportVideoSvg from "../src/assets/export_video.svg";
