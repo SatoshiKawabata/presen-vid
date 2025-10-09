@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useLocale } from "../hooks/useLocale";
 import LogoSvg from "../assets/logo.svg";

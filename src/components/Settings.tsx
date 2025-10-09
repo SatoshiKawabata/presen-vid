@@ -1,15 +1,13 @@
 import {
   Button,
-  createStyles,
   InputLabel,
-  makeStyles,
   MenuItem,
   Modal,
   Select,
   TextField,
-  Theme,
   Typography,
-} from "@material-ui/core";
+  Box,
+} from "@mui/material";
 import { useRouter } from "next/dist/client/router";
 import React, { Dispatch, useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../context/globalContext";
@@ -64,12 +62,23 @@ export const Settings = ({ dispatch, state }: P) => {
   const [isOpenedDeletePresentationModal, setIsOpenedDeletePresentationModal] =
     useState(false);
 
-  const classes = useModalPaperStyles();
   const { t } = useLocale();
 
   return (
     <>
-      <div className={classes.paper}>
+      <Box
+        sx={{
+          position: "absolute",
+          width: 500,
+          backgroundColor: "background.paper",
+          border: "2px solid #000",
+          boxShadow: 5,
+          padding: "16px 32px 24px",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
         <Typography
           variant="subtitle2"
           component="h2"
@@ -175,13 +184,25 @@ export const Settings = ({ dispatch, state }: P) => {
         >
           {t.DELETE_PRESENTATION}
         </Button>
-      </div>
+      </Box>
       <Modal
         open={isOpenedDeletePresentationModal}
         onClose={() => setIsOpenedDeletePresentationModal(false)}
         aria-labelledby={t.DELETE_PRESENTATION_MODAL_TITLE}
       >
-        <div className={classes.paper}>
+        <Box
+          sx={{
+            position: "absolute",
+            width: 500,
+            backgroundColor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 5,
+            padding: "16px 32px 24px",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
           <Typography
             variant="subtitle2"
             component="h2"
@@ -194,7 +215,7 @@ export const Settings = ({ dispatch, state }: P) => {
             onClick={() => {
               setIsOpenedDeletePresentationModal(false);
             }}
-            color="default"
+            color="inherit"
           >
             {t.NO}
           </Button>
@@ -214,24 +235,8 @@ export const Settings = ({ dispatch, state }: P) => {
           >
             {t.YES}
           </Button>
-        </div>
+        </Box>
       </Modal>
     </>
   );
 };
-
-export const useModalPaperStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      position: "absolute",
-      width: 500,
-      backgroundColor: theme.palette.background.paper,
-      border: "2px solid #000",
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      top: `50%`,
-      left: `50%`,
-      transform: `translate(-50%, -50%)`,
-    },
-  })
-);

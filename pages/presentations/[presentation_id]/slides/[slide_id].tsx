@@ -19,8 +19,8 @@ import {
   ListItemText,
   Modal,
   Tooltip,
-} from "@material-ui/core";
-import GetAppIcon from "@material-ui/icons/GetApp";
+} from "@mui/material";
+import GetAppIcon from "@mui/icons-material/GetApp";
 import {
   createVideo,
   download,
@@ -28,12 +28,12 @@ import {
   getImageSize,
   importFile,
 } from "../../../../src/Utils";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useLocale } from "../../../../src/hooks/useLocale";
-import SettingsIcon from "@material-ui/icons/Settings";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Settings } from "../../../../src/components/Settings";
 import Link from "next/link";
-import HomeIcon from "@material-ui/icons/Home";
+import HomeIcon from "@mui/icons-material/Home";
 import JSZip from "jszip";
 import { GlobalContext } from "../../../../src/context/globalContext";
 
